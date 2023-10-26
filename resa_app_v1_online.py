@@ -10,6 +10,8 @@ from PIL import Image
 import datetime
 import locale
 import os
+import boto3
+from io import BytesIO
 
 
 # Constantes
