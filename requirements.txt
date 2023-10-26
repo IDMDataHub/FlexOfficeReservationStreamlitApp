@@ -1,0 +1,4 @@
+boto3==1.17.106
+s3fs==2021.10.1
+streamlit==1.8.1
+unidecode==1.3.4
