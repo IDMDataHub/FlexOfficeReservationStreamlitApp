@@ -173,7 +173,7 @@ def main():
             
             elif option == "1 jour spécifique":
                 # Demander à l'utilisateur de sélectionner une date
-                selected_date = st.date_input("Sélectionnez une date", value=today)
+                selected_date = st.date_input("Sélectionnez une date", value="today")
                 if selected_date:
                     display_selected_data(df, selected_date, 1)
             
