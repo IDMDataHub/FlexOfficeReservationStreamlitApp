@@ -28,7 +28,7 @@ s3 = boto3.resource('s3',
                   aws_secret_access_key=st.secrets['AWS_SECRET_ACCESS_KEY'])
 
 # Configuration locale
-locale.setlocale(locale.LC_TIME, 'fr_FR')  # pour Windows, utilisez 'French_France.1252' ou similaire si nécessaire
+# locale.setlocale(locale.LC_TIME, 'fr_FR')  # pour Windows, utilisez 'French_France.1252' ou similaire si nécessaire
 
 # Chargement des données et des images
 def load_file_from_s3(bucket_name, file_name):
