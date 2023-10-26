@@ -158,7 +158,7 @@ def main():
         load_image("serre.jpg")
         
         df = load_file_from_s3(BUCKET_NAME, 'FlexSerre.xlsx')
-        st.dataframme(df)
+        st.dataframe(df)
         df['Date'] = pd.to_datetime(df['Date'])
         
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
