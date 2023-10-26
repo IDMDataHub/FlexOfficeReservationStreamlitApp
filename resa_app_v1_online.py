@@ -143,7 +143,7 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
 
 #########################################################################################
 
-### ################### ########### CODE
+################################### CODE
 
 #########################################################################################
 
@@ -151,6 +151,15 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
 def main():
     
     flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", ["Jungle", "Aquarium"])
+
+    # Définition des couleurs de fond pour chaque onglet
+    background_colors = {
+        "Jungle": "lightgreen",
+        "Aquarium": "lightblue"
+}
+
+    background_color = background_colors[flex]
+    st.markdown(f'<style>body {{background-color: {background_color};}}</style>', unsafe_allow_html=True)
 
     today = datetime.date.today()
     
