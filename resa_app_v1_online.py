@@ -150,7 +150,7 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
 
 def main():
     
-    flex = st.sidebar.selectbox("Choissirez votre flex office de rêve :", ["Jungle", "Aquarium"])
+    flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", ["Jungle", "Aquarium"])
 
     today = datetime.date.today()
     
