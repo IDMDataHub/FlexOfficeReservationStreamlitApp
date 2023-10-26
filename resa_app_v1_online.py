@@ -59,25 +59,26 @@ def load_image(img_name):
     else:
         st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")
 
-def save_to_excel(df, path):
-    """st.image(image)
-    Sauvegarde le DataFrame dans un fichier Excel, remplaçant le fichier existant.
-    """
-    # Assurez-vous de gérer les exceptions ici pour les problèmes d'écriture de fichier (p.ex. fichier ouvert dans un autre programme)
-    try:
-        df.to_excel(path, index=False)  # index=False pour éviter d'ajouter des indices dans votre fichier Excel
-    except Exception as e:
-        st.error(f"Une erreur s'est produite lors de l'enregistrement du fichier : {e}")
-        return False
-    return True
+def save_df_to_s3(df, bucket_name, file_name):
+    # Créez un buffer pour stocker le fichier Excel
+    excel_buffer = BytesIO()
 
-# Filtrage des données par date
-def filter_data_by_date(data, start_date, end_date=None):
-    if end_date is None:
-        end_date = start_date
-    mask = (data['Date'] >= start_date) & (data['Date'] <= end_date)
-    return data.loc[mask]
+    # Écrivez le DataFrame dans le buffer
+    with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False)
 
+    # Réinitialisez la position du buffer à 0
+    excel_buffer.seek(0)
+
+    # Obtenez l'objet bucket
+    bucket = s3.Bucket(bucket_name)
+
+    # Stockez le fichier Excel dans S3
+    bucket.put_object(
+        Key=file_name,
+        Body=excel_buffer.read(),
+        ContentType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
 def apply_custom_styles(cell_contents):
     """
@@ -151,6 +152,7 @@ def main():
     
     flex = st.sidebar.selectbox("Choissirez votre flex office de rêve :", ["Jungle", "Aquarium"])
 
+    today = datetime.date.today()
     
     if flex == "Jungle":
 
@@ -167,8 +169,6 @@ def main():
             )
             st.write("---")
             
-            today = datetime.date.today()
-
             if option == "Aujourd'hui":
 
                 display_selected_data(df, today, 1)  # 1 représente un jour, qui comprendra deux entrées : matin et après-midi.
@@ -196,7 +196,7 @@ def main():
             if option == "1 jour spécifique":
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
-                    selected_date = st.date_input("Sélectionnez une date", value="today")
+                    selected_date = st.date_input("Sélectionnez une date", value=today)
                 with col2:
                     period = st.radio("Quelle période souhaitez-vous", 
                                   ("Matin", "Après-midi", "Journée")
@@ -244,6 +244,7 @@ def main():
                                 # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
                                 # Nous allons maintenant sauvegarder le DataFrame mis à jour.
                                 df.to_excel(DATA_JUNGLE_PATH, index=False)
+                                save_df_to_s3(df, BUCKET_NAME, 'FlexAqua.xlsx')
                                 st.success("Réservation effectuée avec succès.")
                             else:
                                 st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
@@ -377,7 +378,7 @@ def main():
         elif tab_selection == "Annulation":
             col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
             with col2:
                 period = st.radio("Quelle période souhaitez-vous", 
                               ("Matin", "Après-midi", "Journée"), index=2
@@ -446,7 +447,7 @@ def main():
             
             elif option == "1 jour spécifique":
                 # Demander à l'utilisateur de sélectionner une date
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
                 if selected_date:
                     display_selected_data(df, selected_date, 1)
             
@@ -467,7 +468,7 @@ def main():
             if option == "1 jour spécifique":
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
-                    selected_date = st.date_input("Sélectionnez une date", value="today")
+                    selected_date = st.date_input("Sélectionnez une date", value=today)
                 with col2:
                     period = st.radio("Quelle période souhaitez-vous", 
                                   ("Matin", "Après-midi", "Journée")
@@ -648,7 +649,7 @@ def main():
         elif tab_selection == "Annulation":
             col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
             with col2:
                 period = st.radio("Quelle période souhaitez-vous", 
                               ("Matin", "Après-midi", "Journée"), index=2
