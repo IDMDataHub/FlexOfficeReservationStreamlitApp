@@ -149,6 +149,9 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
 
 
 def main():
+
+    st.set_page_config(layout="wide")
+
     
     flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", ["Jungle", "Aquarium"])
 
