@@ -199,8 +199,8 @@ def main():
                     selected_date = st.date_input("Sélectionnez une date", value=today)
                 with col2:
                     period = st.radio("Quelle période souhaitez-vous", 
-                                  ("Matin", "Après-midi", "Journée")
-                                  )
+                              ("Matin", "Après-midi", "Journée"), index=2
+                              )
                 with col3:
                     office = st.radio("Quel bureau préférez vous ?", 
                                   ("Baloo", "Stitch", "Rajah", "Meeko")
@@ -243,7 +243,7 @@ def main():
                                 
                                 # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
                                 # Nous allons maintenant sauvegarder le DataFrame mis à jour.
-                                df.to_excel(DATA_JUNGLE_PATH, index=False)
+                                # df.to_excel(DATA_JUNGLE_PATH, index=False)
                                 save_df_to_s3(df, BUCKET_NAME, 'FlexAqua.xlsx')
                                 st.success("Réservation effectuée avec succès.")
                             else:
