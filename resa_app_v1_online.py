@@ -151,7 +151,6 @@ def main():
     
     flex = st.sidebar.selectbox("Choissirez votre flex office de rêve :", ["Jungle", "Aquarium"])
 
-    today = datetime.date.today()
     
     if flex == "Jungle":
 
@@ -168,7 +167,10 @@ def main():
             )
             st.write("---")
             
+            today = datetime.date.today()
+            
             if option == "Aujourd'hui":
+
                 display_selected_data(df, today, 1)  # 1 représente un jour, qui comprendra deux entrées : matin et après-midi.
             
             elif option == "1 jour spécifique":
