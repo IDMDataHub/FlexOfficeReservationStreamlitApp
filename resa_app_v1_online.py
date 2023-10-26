@@ -64,7 +64,7 @@ def save_df_to_s3(df, bucket_name, file_name):
     excel_buffer = BytesIO()
 
     # Écrivez le DataFrame dans le buffer
-    with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(excel_buffer) as writer:
         df.to_excel(writer, index=False)
 
     # Réinitialisez la position du buffer à 0
