@@ -168,14 +168,14 @@ def main():
             st.write("---")
             
             today = datetime.date.today()
-            
+
             if option == "Aujourd'hui":
 
                 display_selected_data(df, today, 1)  # 1 représente un jour, qui comprendra deux entrées : matin et après-midi.
             
             elif option == "1 jour spécifique":
                 # Demander à l'utilisateur de sélectionner une date
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
                 if selected_date:
                     display_selected_data(df, selected_date, 1)
             
