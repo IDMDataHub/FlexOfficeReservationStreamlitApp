@@ -47,7 +47,7 @@ def load_file_from_s3(bucket_name, file_name):
 
     # Lisez le fichier Excel dans un DataFrame
     with BytesIO(obj.get()['Body'].read()) as bIO:
-        df = pd.read_excel(bIO, index_col=0)
+        df = pd.read_excel(bIO)
 
     return df
 
@@ -158,8 +158,6 @@ def main():
         load_image("serre.jpg")
         
         df = load_file_from_s3(BUCKET_NAME, 'FlexSerre.xlsx')
-        st.dataframe(df)
-        df['Date'] = pd.to_datetime(df['Date'])
         
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
     
@@ -430,7 +428,6 @@ def main():
         load_image("aquarium.jpg")
     
         df = load_file_from_s3(BUCKET_NAME, 'FlexAqua.xlsx')
-        df['Date'] = pd.to_datetime(df['Date'])
 
         
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
