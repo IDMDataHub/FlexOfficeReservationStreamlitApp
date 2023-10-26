@@ -173,7 +173,7 @@ def main():
             
             elif option == "1 jour spécifique":
                 # Demander à l'utilisateur de sélectionner une date
-                selected_date = st.date_input("Sélectionnez une date", value=today)
+                selected_date = st.date_input("Sélectionnez une date", value="today")
                 if selected_date:
                     display_selected_data(df, selected_date, 1)
             
@@ -194,7 +194,7 @@ def main():
             if option == "1 jour spécifique":
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
-                    selected_date = st.date_input("Sélectionnez une date", value=today)
+                    selected_date = st.date_input("Sélectionnez une date", value="today")
                 with col2:
                     period = st.radio("Quelle période souhaitez-vous", 
                                   ("Matin", "Après-midi", "Journée")
@@ -375,7 +375,7 @@ def main():
         elif tab_selection == "Annulation":
             col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
-                selected_date = st.date_input("Sélectionnez une date", value=today)
+                selected_date = st.date_input("Sélectionnez une date", value="today")
             with col2:
                 period = st.radio("Quelle période souhaitez-vous", 
                               ("Matin", "Après-midi", "Journée"), index=2
@@ -444,7 +444,7 @@ def main():
             
             elif option == "1 jour spécifique":
                 # Demander à l'utilisateur de sélectionner une date
-                selected_date = st.date_input("Sélectionnez une date", value=today)
+                selected_date = st.date_input("Sélectionnez une date", value="today")
                 if selected_date:
                     display_selected_data(df, selected_date, 1)
             
@@ -465,7 +465,7 @@ def main():
             if option == "1 jour spécifique":
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
-                    selected_date = st.date_input("Sélectionnez une date", value=today)
+                    selected_date = st.date_input("Sélectionnez une date", value="today")
                 with col2:
                     period = st.radio("Quelle période souhaitez-vous", 
                                   ("Matin", "Après-midi", "Journée")
@@ -646,7 +646,7 @@ def main():
         elif tab_selection == "Annulation":
             col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
-                selected_date = st.date_input("Sélectionnez une date", value=today)
+                selected_date = st.date_input("Sélectionnez une date", value="today")
             with col2:
                 period = st.radio("Quelle période souhaitez-vous", 
                               ("Matin", "Après-midi", "Journée"), index=2
