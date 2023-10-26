@@ -244,7 +244,7 @@ def main():
                                 # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
                                 # Nous allons maintenant sauvegarder le DataFrame mis à jour.
                                 # df.to_excel(DATA_JUNGLE_PATH, index=False)
-                                save_df_to_s3(df, BUCKET_NAME, 'FlexAqua.xlsx')
+                                save_df_to_s3(df, BUCKET_NAME, 'FlexSerre.xlsx')
                                 st.success("Réservation effectuée avec succès.")
                             else:
                                 st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
