@@ -150,6 +150,8 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
 def main():
     
     flex = st.sidebar.selectbox("Choissirez votre flex office de rêve :", ["Jungle", "Aquarium"])
+
+    today = datetime.date.today()
     
     if flex == "Jungle":
 
@@ -165,14 +167,13 @@ def main():
                 ("Aujourd'hui", "1 jour spécifique", "1 semaine glissante", "1 mois glissant")
             )
             st.write("---")
-            today = datetime.date.today()
             
             if option == "Aujourd'hui":
                 display_selected_data(df, today, 1)  # 1 représente un jour, qui comprendra deux entrées : matin et après-midi.
             
             elif option == "1 jour spécifique":
                 # Demander à l'utilisateur de sélectionner une date
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
                 if selected_date:
                     display_selected_data(df, selected_date, 1)
             
@@ -193,7 +194,7 @@ def main():
             if option == "1 jour spécifique":
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
-                    selected_date = st.date_input("Sélectionnez une date", value="today")
+                    selected_date = st.date_input("Sélectionnez une date", value=today)
                 with col2:
                     period = st.radio("Quelle période souhaitez-vous", 
                                   ("Matin", "Après-midi", "Journée")
@@ -374,7 +375,7 @@ def main():
         elif tab_selection == "Annulation":
             col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
             with col2:
                 period = st.radio("Quelle période souhaitez-vous", 
                               ("Matin", "Après-midi", "Journée"), index=2
@@ -437,14 +438,13 @@ def main():
                 ("Aujourd'hui", "1 jour spécifique", "1 semaine glissante", "1 mois glissant")
             )
             st.write("---")
-            today = datetime.date.today()
             
             if option == "Aujourd'hui":
                 display_selected_data(df, today, 1)  # 1 représente un jour, qui comprendra deux entrées : matin et après-midi.
             
             elif option == "1 jour spécifique":
                 # Demander à l'utilisateur de sélectionner une date
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
                 if selected_date:
                     display_selected_data(df, selected_date, 1)
             
@@ -465,7 +465,7 @@ def main():
             if option == "1 jour spécifique":
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
-                    selected_date = st.date_input("Sélectionnez une date", value="today")
+                    selected_date = st.date_input("Sélectionnez une date", value=today)
                 with col2:
                     period = st.radio("Quelle période souhaitez-vous", 
                                   ("Matin", "Après-midi", "Journée")
@@ -646,7 +646,7 @@ def main():
         elif tab_selection == "Annulation":
             col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
-                selected_date = st.date_input("Sélectionnez une date", value="today")
+                selected_date = st.date_input("Sélectionnez une date", value=today)
             with col2:
                 period = st.radio("Quelle période souhaitez-vous", 
                               ("Matin", "Après-midi", "Journée"), index=2
