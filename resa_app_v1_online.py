@@ -92,7 +92,7 @@ def apply_custom_styles(cell_contents, available_color='#29AB87'):  # Ici, '#00F
     elif "2023" in str(cell_contents) or "2024" in str(cell_contents) or "2025" in str(cell_contents):  # Combinaison des conditions pour 2023, 2024 et 2025
         return ''  # Pas de style pour cela, vous pourriez vouloir préciser ce cas
     else:
-        return 'background-color: orange'  # Pour les autres cellules, pas 'Disponible' ou les valeurs spécifiques ignorées
+        return f'background-color: #ff8C00'  # Pour les autres cellules, pas 'Disponible' ou les valeurs spécifiques ignorées
 
 
  
@@ -174,7 +174,7 @@ def reserve_office(df, today, offices, excel):
             selected_date = st.date_input("Sélectionnez une date", value=today)
         with col2:
             period = st.radio("Quelle période souhaitez-vous", 
-                          ("Matin", "Après-midi", "Journée")
+                          ("Matin", "Après-midi", "Journée"), index=2
                           )
         with col3:
             office = st.radio("Quel bureau préférez vous ?", tuple(offices))
