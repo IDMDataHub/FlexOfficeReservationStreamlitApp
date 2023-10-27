@@ -342,7 +342,7 @@ def reserve_office(df, today, offices, excel):
 
 
 
-def cancel_reservation(df, today, offices):
+def cancel_reservation(df, today, offices, excel):
     
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
