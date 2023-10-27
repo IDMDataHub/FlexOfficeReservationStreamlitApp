@@ -418,8 +418,8 @@ def main():
         st.write('<style>body { background-color: #29AB87; }</style>', unsafe_allow_html=True)  # Vert Jungle
         load_image("serre.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexSerre.xlsx')
+        load_image_sidebar("jungle.png")
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
-        load_image_sidebar("aqua.png")
         excel = "FlexSerre.xlsx"
         offices = ["Baloo", "Stitch", "Rajah", "Meeko"]
 
@@ -436,8 +436,8 @@ def main():
         st.write('<style>body { background-color: #25b3c2; }</style>', unsafe_allow_html=True)  # Couleur Aquarium
         load_image("aquarium.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexAqua.xlsx')
-        tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
         load_image_sidebar("aqua.png")
+        tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
         excel = "FlexAqua.xlsx"
         offices = ["Némo", "Dori", "Crush", "Polochon"]
 
