@@ -403,30 +403,34 @@ def main():
         load_image("serre.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexSerre.xlsx')
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
+        excel = "FlexSerre.xlsx"
+        offices = ["Baloo", "Stitch", "Rajah", "Meeko"]
 
         if tab_selection == "Visualisation":
             visualize_data(df, today)
 
         elif tab_selection == "Réservation":
-            reserve_office(df, today, ["Baloo", "Stitch", "Rajah", "Meeko"], "FlexSerre.xlsx")
+            reserve_office(df, today, offices, excel)
 
         elif tab_selection == "Annulation":
-            cancel_reservation(df, today, ["Baloo", "Stitch", "Rajah", "Meeko"], "FlexSerre.xlsx")
+            cancel_reservation(df, today, offices, excel)
 
     elif flex == "Aquarium":
 
         load_image("aquarium.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexAqua.xlsx')
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
+        excel = "FlexAqua.xlsx"
+        offices = ["Némo", "Dori", "Crush", "Polochon"]
 
         if tab_selection == "Visualisation":
             visualize_data(df, today)
 
         elif tab_selection == "Réservation":
-            reserve_office(df, today, ["Némo", "Dori", "Crush", "Polochon"], "FlexAqua.xlsx")
+            reserve_office(df, today, offices, excel)
 
         elif tab_selection == "Annulation":
-            cancel_reservation(df, today, ["Némo", "Dori", "Crush", "Polochon"], "FlexAqua.xlsx")
+            cancel_reservation(df, today, offices, excel)
            
 if __name__ == "__main__":
     main()
