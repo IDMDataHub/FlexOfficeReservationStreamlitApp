@@ -74,7 +74,7 @@ def save_df_to_s3(df, bucket_name, file_name):
         ContentType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
-def apply_custom_styles(cell_contents, available_color='#00FF00'):  # Ici, '#00FF00' est l'équivalent hexadécimal de 'lime'
+def apply_custom_styles(cell_contents, available_color='#29AB87'):  # Ici, '#00FF00' est l'équivalent hexadécimal de 'lime'
     """
     Appliquez des styles personnalisés à chaque cellule en fonction de son contenu.
     
