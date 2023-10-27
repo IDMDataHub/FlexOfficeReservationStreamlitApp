@@ -19,6 +19,8 @@ from io import BytesIO
 GENERAL_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 IMG_PATH = os.path.join(GENERAL_PATH, "images/")
 BUCKET_NAME = "bucketidb"
+MOT_DE_PASSE = st.secret["APP_MDP"]
+
 
 s3 = boto3.resource('s3',
                   aws_access_key_id=st.secrets['AWS_ACCESS_KEY_ID'],
@@ -429,21 +431,28 @@ def main():
         }
     }
 
-    flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", list(flex_config.keys()))
+    mot_de_passe_saisi = st.text_input("Entrez le mot de passe:", type="password")
 
-    # Appliquer la configuration en fonction du choix
-    load_image(flex_config[flex]["image"])
-    df = load_file_from_s3(BUCKET_NAME, flex_config[flex]["excel"])
-    load_image_sidebar(flex_config[flex]["sidebar_image"])
+    if mot_de_passe_saisi == MOT_DE_PASSE:
 
-    tab_selection = st.sidebar.selectbox("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
+        flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", list(flex_config.keys()))
 
-    if tab_selection == "Visualisation":
-        visualize_data(df, today)
-    elif tab_selection == "Réservation":
-        reserve_office(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
-    elif tab_selection == "Annulation":
-        cancel_reservation(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
+        # Appliquer la configuration en fonction du choix
+        load_image(flex_config[flex]["image"])
+        df = load_file_from_s3(BUCKET_NAME, flex_config[flex]["excel"])
+        load_image_sidebar(flex_config[flex]["sidebar_image"])
+
+        tab_selection = st.sidebar.selectbox("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
+
+        if tab_selection == "Visualisation":
+            visualize_data(df, today)
+        elif tab_selection == "Réservation":
+            reserve_office(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
+        elif tab_selection == "Annulation":
+            cancel_reservation(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
+
+    else: 
+        st.write("Mot de passe incorrect. Veuillez réessayer.")
 
            
 if __name__ == "__main__":
