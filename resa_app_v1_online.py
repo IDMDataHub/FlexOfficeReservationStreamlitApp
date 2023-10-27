@@ -74,27 +74,34 @@ def save_df_to_s3(df, bucket_name, file_name):
         ContentType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
-def apply_custom_styles(cell_contents):
+def apply_custom_styles(cell_contents, available_color='#29AB87'):  # Ici, '#00FF00' est l'équivalent hexadécimal de 'lime'
     """
     Appliquez des styles personnalisés à chaque cellule en fonction de son contenu.
+    
+    Args:
+    - cell_contents: Le contenu de la cellule.
+    - available_color: La couleur à appliquer pour les cellules 'Disponible'. Par défaut, c'est '#00FF00' (lime).
+    
+    Returns:
+    Le style à appliquer pour la cellule.
     """
     if cell_contents == 'Disponible':
-        return 'background-color: lime'
+        return f'background-color: {available_color}'
     elif cell_contents in ["Matin", "Après-midi"]:  # Si vous voulez ignorer ces valeurs
         return ''  # Pas de style particulier pour ces cellules
-    elif "2023" in str(cell_contents):  # Si vous cherchez à vérifier l'année, bien que cette condition soit très spécifique et peut-être pas nécessaire
-        return ''  # Pas de style pour cela, vous pourriez vouloir préciser ce cas
-    elif "2024" in str(cell_contents):  # Si vous cherchez à vérifier l'année, bien que cette condition soit très spécifique et peut-être pas nécessaire
+    elif "2023" in str(cell_contents) or "2024" in str(cell_contents) or "2025" in str(cell_contents):  # Combinaison des conditions pour 2023, 2024 et 2025
         return ''  # Pas de style pour cela, vous pourriez vouloir préciser ce cas
     else:
         return 'background-color: orange'  # Pour les autres cellules, pas 'Disponible' ou les valeurs spécifiques ignorées
+
+
  
 def is_weekend(date):
     return date.weekday() >= 5  # 5 pour samedi, 6 pour dimanche
 
 
 # Affichage des données
-def display_selected_data(df, start_date, days_count, period='Journée'):
+def display_selected_data(df, start_date, days_count, period='Journée', color="#29AB87"):
     """
     Affiche les données pour la période sélectionnée, en appliquant les styles nécessaires.
     """
@@ -125,7 +132,7 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
         
         if not data_period.empty:
             # Nous appliquons un style spécifique aux cellules en fonction de leur contenu.
-            styled_data = data_period.style.map(apply_custom_styles)
+            styled_data = data_period.style.map(apply_custom_styles(available_color(color)))
             # Cachez l'index et affichez le DataFrame stylisé.
             st.table(styled_data)
         else:
