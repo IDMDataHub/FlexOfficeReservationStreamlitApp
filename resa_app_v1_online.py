@@ -159,7 +159,7 @@ def reserve_office(df, today, offices, excel):
         "Choisissez une période de visualisation des données:",
             ("1 jour spécifique", "Plusieurs jours dans le mois"))
     
-        st.write("---")
+    st.write("---")
             
     if option == "1 jour spécifique":
         col1, col2, col3 = st.columns([1, 1, 1])
