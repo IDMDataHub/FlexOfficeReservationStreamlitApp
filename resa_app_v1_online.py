@@ -431,10 +431,19 @@ def main():
         }
     }
 
-    mot_de_passe_saisi = st.text_input("Entrez le mot de passe:", type="password")
+    # Initialisation de st.session_state
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
 
-    if mot_de_passe_saisi == MOT_DE_PASSE:
+    if not st.session_state.authenticated:
+        mot_de_passe_saisi = st.text_input("Entrez le mot de passe:", type="password")
 
+        if mot_de_passe_saisi == MOT_DE_PASSE:
+            st.session_state.authenticated = True
+        else:
+            st.write("Mot de passe incorrect. Veuillez réessayer.")
+
+    if st.session_state.authenticated:
         flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", list(flex_config.keys()))
 
         # Appliquer la configuration en fonction du choix
@@ -451,10 +460,5 @@ def main():
         elif tab_selection == "Annulation":
             cancel_reservation(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
 
-    else: 
-        st.write("Mot de passe incorrect. Veuillez réessayer.")
-
-           
 if __name__ == "__main__":
     main()
-
