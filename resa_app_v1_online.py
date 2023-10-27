@@ -407,6 +407,7 @@ def main():
     today = datetime.date.today()
 
     if flex == "Jungle":
+        st.write('<style>body { background-color: #29AB87; }</style>', unsafe_allow_html=True)  # Vert Jungle
         load_image("serre.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexSerre.xlsx')
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
@@ -423,7 +424,7 @@ def main():
             cancel_reservation(df, today, offices, excel)
 
     elif flex == "Aquarium":
-
+         st.write('<style>body { background-color: #25b3c2; }</style>', unsafe_allow_html=True)  # Couleur Aquarium
         load_image("aquarium.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexAqua.xlsx')
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
