@@ -404,10 +404,10 @@ def cancel_reservation(df, today, offices, excel):
                         # Mettre à jour le statut du bureau pour le rendre disponible
                         df.at[index, office] = 'Disponible'
                         st.success(f"Le {office} est maintenant disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
-                        st.experimental_rerun()
         
             # Sauvegarder les modifications dans le DataFrame
             save_df_to_s3(df, BUCKET_NAME, excel)
+            st.experimental_rerun()
         else:
             st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
 
