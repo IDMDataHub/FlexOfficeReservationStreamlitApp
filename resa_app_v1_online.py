@@ -19,7 +19,7 @@ from io import BytesIO
 GENERAL_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 IMG_PATH = os.path.join(GENERAL_PATH, "images/")
 BUCKET_NAME = "bucketidb"
-MOT_DE_PASSE = st.secret["APP_MDP"]
+MOT_DE_PASSE = st.secrets["APP_MDP"]
 
 
 s3 = boto3.resource('s3',
