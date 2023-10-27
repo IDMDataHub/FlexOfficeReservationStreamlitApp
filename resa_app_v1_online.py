@@ -154,7 +154,7 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
 
 def visualize_data(df, today):
     option = st.radio(
-        "Choisissez une période de visualisation des données :",
+        "Choisissez une période de visualisation des données",
         ("Aujourd'hui", "1 jour spécifique", "1 semaine glissante", "1 mois glissant")
     )
     st.write("---")
@@ -173,7 +173,7 @@ def visualize_data(df, today):
             
 def reserve_office(df, today, offices, excel):
     option = st.radio(
-        "Choisissez une période de visualisation des données:",
+        "Choisissez une période de visualisation des données",
             ("1 jour spécifique", "Plusieurs jours dans le mois"))
     
     st.write("---")
@@ -245,7 +245,7 @@ def reserve_office(df, today, offices, excel):
         
         # Création d'un formulaire pour soumettre les réservations
         with st.form(key='reservation_form'):
-            st.write("Veuillez sélectionner les créneaux de réservation :")
+            st.write("Veuillez sélectionner les créneaux de réservation")
             
             start_date = datetime.date.today()
             end_date = start_date + datetime.timedelta(days=15)  # ou toute autre logique pour définir la période
@@ -436,7 +436,7 @@ def main():
         st.session_state.authenticated = False
 
     if not st.session_state.authenticated:
-        mot_de_passe_saisi = st.text_input("Entrez le mot de passe:", type="password")
+        mot_de_passe_saisi = st.text_input("Entrez le mot de passe", type="password")
 
         if mot_de_passe_saisi == MOT_DE_PASSE:
             st.session_state.authenticated = True
@@ -444,14 +444,14 @@ def main():
             st.write("Mot de passe incorrect. Veuillez réessayer.")
 
     if st.session_state.authenticated:
-        flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", list(flex_config.keys()))
+        flex = st.sidebar.selectbox("Choisissez votre flex office de rêve", list(flex_config.keys()))
 
         # Appliquer la configuration en fonction du choix
         load_image(flex_config[flex]["image"])
         df = load_file_from_s3(BUCKET_NAME, flex_config[flex]["excel"])
         load_image_sidebar(flex_config[flex]["sidebar_image"])
 
-        tab_selection = st.sidebar.selectbox("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
+        tab_selection = st.sidebar.selectbox("Choisissez un onglet", ["Visualisation", "Réservation", "Annulation"])
 
         if tab_selection == "Visualisation":
             visualize_data(df, today)
