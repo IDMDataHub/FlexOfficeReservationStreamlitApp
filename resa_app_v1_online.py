@@ -228,7 +228,7 @@ def reserve_office(df, today, offices, excel):
                         # Nous allons maintenant sauvegarder le DataFrame mis à jour.
                         save_df_to_s3(df, BUCKET_NAME, excel)
                         st.success("Réservation effectuée avec succès.")
-                        st.rerun()
+                        st.experimental_rerun()
                     else:
                         st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
         
@@ -354,7 +354,7 @@ def reserve_office(df, today, offices, excel):
                         # Nous allons maintenant sauvegarder le DataFrame mis à jour.
                         save_df_to_s3(df, BUCKET_NAME, excel)
                         st.success("Réservation effectuée avec succès.")
-                        st.rerun()
+                        st.experimental_rerun()
                     else:
                         st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
 
@@ -404,7 +404,7 @@ def cancel_reservation(df, today, offices, excel):
                         # Mettre à jour le statut du bureau pour le rendre disponible
                         df.at[index, office] = 'Disponible'
                         st.success(f"Le {office} est maintenant disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
-                        st.rerun()
+                        st.experimental_rerun()
         
             # Sauvegarder les modifications dans le DataFrame
             save_df_to_s3(df, BUCKET_NAME, excel)
