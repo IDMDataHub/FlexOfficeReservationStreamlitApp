@@ -411,44 +411,40 @@ def cancel_reservation(df, today, offices, excel):
 
 def main():
     st.set_page_config(layout="wide")
-    flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", ["Jungle", "Aquarium"])
     today = datetime.date.today()
 
-    if flex == "Jungle":
-        st.write('<style>body { background-color: #29AB87; }</style>', unsafe_allow_html=True)  # Vert Jungle
-        load_image("serre.jpg")
-        df = load_file_from_s3(BUCKET_NAME, 'FlexSerre.xlsx')
-        load_image_sidebar("jungle.png")
-        tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
-        excel = "FlexSerre.xlsx"
-        offices = ["Baloo", "Stitch", "Rajah", "Meeko"]
+    # Configuration pour chaque flex office
+    flex_config = {
+        "Jungle": {
+            "image": "serre.jpg",
+            "excel": "FlexSerre.xlsx",
+            "sidebar_image": "jungle.png",
+            "offices": ["Baloo", "Stitch", "Rajah", "Meeko"]
+        },
+        "Aquarium": {
+            "image": "aquarium.jpg",
+            "excel": "FlexAqua.xlsx",
+            "sidebar_image": "aqua.png",
+            "offices": ["Némo", "Dori", "Crush", "Polochon"]
+        }
+    }
 
-        if tab_selection == "Visualisation":
-            visualize_data(df, today)
+    flex = st.sidebar.selectbox("Choisissez votre flex office de rêve :", list(flex_config.keys()))
 
-        elif tab_selection == "Réservation":
-            reserve_office(df, today, offices, excel)
+    # Appliquer la configuration en fonction du choix
+    load_image(flex_config[flex]["image"])
+    df = load_file_from_s3(BUCKET_NAME, flex_config[flex]["excel"])
+    load_image_sidebar(flex_config[flex]["sidebar_image"])
 
-        elif tab_selection == "Annulation":
-            cancel_reservation(df, today, offices, excel)
+    tab_selection = st.sidebar.selectbox("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
 
-    elif flex == "Aquarium":
-        st.write('<style>body { background-color: #25b3c2; }</style>', unsafe_allow_html=True)  # Couleur Aquarium
-        load_image("aquarium.jpg")
-        df = load_file_from_s3(BUCKET_NAME, 'FlexAqua.xlsx')
-        load_image_sidebar("aqua.png")
-        tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
-        excel = "FlexAqua.xlsx"
-        offices = ["Némo", "Dori", "Crush", "Polochon"]
+    if tab_selection == "Visualisation":
+        visualize_data(df, today)
+    elif tab_selection == "Réservation":
+        reserve_office(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
+    elif tab_selection == "Annulation":
+        cancel_reservation(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
 
-        if tab_selection == "Visualisation":
-            visualize_data(df, today)
-
-        elif tab_selection == "Réservation":
-            reserve_office(df, today, offices, excel)
-
-        elif tab_selection == "Annulation":
-            cancel_reservation(df, today, offices, excel)
            
 if __name__ == "__main__":
     main()
