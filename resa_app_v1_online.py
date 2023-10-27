@@ -15,10 +15,7 @@ from io import BytesIO
 
 
 # Constantes
-# DATA_JUNGLE_PATH = r"C:\Users\m.jacoupy\Téléchargements\FlexSerre.xlsx"
-# DATA_AQUA_PATH = r"C:\Users\m.jacoupy\Téléchargements\FlexAqua.xlsx"
-# SERRE_PATH = r"C:\Users\m.jacoupy\Téléchargements\serre.jpg"
-# AQUARIUM_PATH = r"C:\Users\m.jacoupy\Téléchargements\aquarium.jpg"
+
 GENERAL_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 IMG_PATH = os.path.join(GENERAL_PATH, "images/")
 BUCKET_NAME = "bucketidb"
@@ -26,9 +23,6 @@ BUCKET_NAME = "bucketidb"
 s3 = boto3.resource('s3',
                   aws_access_key_id=st.secrets['AWS_ACCESS_KEY_ID'],
                   aws_secret_access_key=st.secrets['AWS_SECRET_ACCESS_KEY'])
-
-# Configuration locale
-# locale.setlocale(locale.LC_TIME, 'fr_FR')  # pour Windows, utilisez 'French_France.1252' ou similaire si nécessaire
 
 # Chargement des données et des images
 def load_file_from_s3(bucket_name, file_name):
