@@ -53,6 +53,14 @@ def load_image(img_name):
     else:
         st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")
 
+def load_image_sidebar(img_name):
+    img_path = os.path.join(IMG_PATH, img_name)
+    if os.path.exists(img_path):
+        image = Image.open(img_path)
+        st.sidebar.image(image, use_column_width=True)
+    else:
+        st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")    
+
 def save_df_to_s3(df, bucket_name, file_name):
     # Créez un buffer pour stocker le fichier Excel
     excel_buffer = BytesIO()
@@ -411,6 +419,7 @@ def main():
         load_image("serre.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexSerre.xlsx')
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
+        load_image_sidebar("aqua.png")
         excel = "FlexSerre.xlsx"
         offices = ["Baloo", "Stitch", "Rajah", "Meeko"]
 
@@ -428,6 +437,7 @@ def main():
         load_image("aquarium.jpg")
         df = load_file_from_s3(BUCKET_NAME, 'FlexAqua.xlsx')
         tab_selection = st.sidebar.radio("Choisissez un onglet :", ["Visualisation", "Réservation", "Annulation"])
+        load_image_sidebar("aqua.png")
         excel = "FlexAqua.xlsx"
         offices = ["Némo", "Dori", "Crush", "Polochon"]
 
