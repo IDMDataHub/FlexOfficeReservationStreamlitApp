@@ -74,7 +74,7 @@ def save_df_to_s3(df, bucket_name, file_name):
         ContentType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
-def apply_custom_styles(cell_contents, available_color='#29AB87'):  # Ici, '#00FF00' est l'équivalent hexadécimal de 'lime'
+def apply_custom_styles(cell_contents, available_color='#00FF00'):  # Ici, '#00FF00' est l'équivalent hexadécimal de 'lime'
     """
     Appliquez des styles personnalisés à chaque cellule en fonction de son contenu.
     
@@ -101,7 +101,7 @@ def is_weekend(date):
 
 
 # Affichage des données
-def display_selected_data(df, start_date, days_count, period='Journée', color="#29AB87"):
+def display_selected_data(df, start_date, days_count, period='Journée'):
     """
     Affiche les données pour la période sélectionnée, en appliquant les styles nécessaires.
     """
@@ -132,7 +132,7 @@ def display_selected_data(df, start_date, days_count, period='Journée', color="
         
         if not data_period.empty:
             # Nous appliquons un style spécifique aux cellules en fonction de leur contenu.
-            styled_data = data_period.style.map(apply_custom_styles(available_color(color)))
+            styled_data = data_period.style.map(apply_custom_styles)
             # Cachez l'index et affichez le DataFrame stylisé.
             st.table(styled_data)
         else:
