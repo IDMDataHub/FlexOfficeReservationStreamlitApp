@@ -446,7 +446,7 @@ def main():
             st.write("Mot de passe incorrect. Veuillez réessayer.")
 
     if st.session_state.authenticated:
-        flex = st.sidebar.selectbox("Choisissez votre flex office de rêve", list(flex_config.keys()), index=1)
+        flex = st.sidebar.selectbox("Choisissez votre flex office de rêve", list(flex_config.keys()), index=0)
 
         # Appliquer la configuration en fonction du choix
         load_image(flex_config[flex]["image"])
