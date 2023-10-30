@@ -161,7 +161,9 @@ def visualize_data(df, today):
     if option == "Aujourd'hui":
         display_selected_data(df, today, 1)
     elif option == "1 jour spécifique":
-        selected_date = st.date_input("Sélectionnez une date", value=today)
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            selected_date = st.date_input("Sélectionnez une date", value=today)
         if selected_date:
             display_selected_data(df, selected_date, 1)
     elif option == "1 semaine glissante":
