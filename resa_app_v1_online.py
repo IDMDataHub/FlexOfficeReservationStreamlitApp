@@ -450,7 +450,7 @@ def main():
         st.session_state.authenticated = False
 
     if not st.session_state.authenticated:
-        mot_de_passe_saisi = st.text_input("Entrez le mot de passe", type="password")
+        mot_de_passe_saisi = st.text_input("Entrez le mot de passe", type="password").upper()
 
         if mot_de_passe_saisi == MOT_DE_PASSE:
             st.session_state.authenticated = True
