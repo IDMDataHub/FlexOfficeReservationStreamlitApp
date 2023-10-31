@@ -184,7 +184,7 @@ def reserve_office(df, today, offices, excel):
         with col1:
             selected_date = st.date_input("Sélectionnez une date", value=today)
         with col2:
-            period = st.radio("Quelle période souhaitez-vous", 
+            period = st.radio("Quelle période souhaitez-vous ?", 
                           ("Matin", "Après-midi", "Journée"), index=2
                           )
         with col3:
@@ -368,7 +368,7 @@ def cancel_reservation(df, today, offices, excel):
     with col1:
         selected_date = st.date_input("Sélectionnez une date", value=today)
     with col2:
-        period = st.radio("Quelle période souhaitez-vous", 
+        period = st.radio("Quelle période souhaitez-vous ?", 
                       ("Matin", "Après-midi", "Journée"), index=2
                       )
     with col3:
