@@ -305,7 +305,10 @@ def reserve_office(df, today, offices, excel):
                                     # Si le bureau n'est pas disponible, désactivez la checkbox
                                     cols[i].write(' -')
                                     user_selections[f"{date_str}-{period}"][office] = False  # Non disponible ou non sélectionné
-                
+                            
+                            if period == "Après-midi":
+                                st.write("---")
+
                     # Bouton de soumission du formulaire
                     col1, col2 = st.columns([3,1])
                     with col2:
