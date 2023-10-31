@@ -144,7 +144,7 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
         # Filtrage sur la période spécifique de la journée, si spécifié
         if period != 'Journée':  # Si la période est spécifiée (i.e., pas 'All')
             # Nous filtrons sur la colonne 'Période' pour inclure uniquement les entrées correspondantes
-            data_period = data_period[data_period['Période'] == period]
+            data_period = data_period[data_period['Créneau'] == period]
         
         # Formatter les dates dans le DataFrame pour l'affichage
         data_period['Date'] = data_period['Date'].dt.strftime('%A %d %B %Y')
@@ -194,7 +194,7 @@ def reserve_office(df, today, offices, excel):
         with col1:
             selected_date = st.date_input("Sélectionnez une date", value=today)
         with col2:
-            period = st.radio("Quelle période souhaitez-vous ?", 
+            period = st.radio("Quel créneau souhaitez-vous ?", 
                           ("Matin", "Après-midi", "Journée"), index=2
                           )
         with col3:
@@ -213,7 +213,7 @@ def reserve_office(df, today, offices, excel):
                     mask = (df['Date'] == pd.Timestamp(selected_date))
         
                     if period != 'Journée':
-                        mask &= (df['Période'] == period)
+                        mask &= (df['Créneau'] == period)
                     
                     # Trouver les lignes qui correspondent à nos critères
                     matching_rows = df.loc[mask]
@@ -226,7 +226,7 @@ def reserve_office(df, today, offices, excel):
                             periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
         
                         for period_segment in periods_to_check:
-                            specific_mask = (matching_rows['Période'] == period_segment)
+                            specific_mask = (matching_rows['Créneau'] == period_segment)
                             # Vérifier si le bureau est disponible pour la réservation
                             if 'Disponible' in matching_rows.loc[specific_mask, office].values:
                                 # Bureau disponible, donc mise à jour pour indiquer qu'il est maintenant réservé.
@@ -277,7 +277,7 @@ def reserve_office(df, today, offices, excel):
                     # Créer une rangée pour les en-têtes de colonne
                     header_cols = st.columns(6)
                     header_cols[0].write("Date")
-                    header_cols[1].write("Période")
+                    header_cols[1].write("Créneau")
                     for i, office in enumerate(office_columns, start=2):
                         header_cols[i].write(office)
                             
@@ -288,7 +288,7 @@ def reserve_office(df, today, offices, excel):
                         current_date = row['Date']  # Assurez-vous que 'Date' est un objet datetime
                         if not is_weekend(current_date):
                             date_str = current_date.strftime('%A %d %B %Y')
-                            period = row['Période']
+                            period = row['Créneau']
                             user_selections[f"{date_str}-{period}"] = {}
                             
                             cols = st.columns(6)
@@ -347,7 +347,7 @@ def reserve_office(df, today, offices, excel):
                                 return
                     
                             # Créez un masque pour les lignes correspondant à la date sélectionnée et à la période.
-                            mask = (df['Date'] == selected_date) & (df['Période'] == period)
+                            mask = (df['Date'] == selected_date) & (df['Créneau'] == period)
                     
                             # Itérer sur les réservations dans le dictionnaire pour la date et la période données
                             for office, is_booked in reservations.items():
@@ -378,7 +378,7 @@ def cancel_reservation(df, today, offices, excel):
     with col1:
         selected_date = st.date_input("Sélectionnez une date", value=today)
     with col2:
-        period = st.radio("Quelle période souhaitez-vous ?", 
+        period = st.radio("Quel créneau souhaitez-vous ?", 
                       ("Matin", "Après-midi", "Journée"), index=2
                       )
     with col3:
@@ -393,7 +393,7 @@ def cancel_reservation(df, today, offices, excel):
         mask = (df['Date'] == pd.Timestamp(selected_date))
         
         if period != 'Journée':
-            mask &= (df['Période'] == period)
+            mask &= (df['Créneau'] == period)
         
         # Trouver les lignes qui correspondent à nos critères
         matching_rows = df.loc[mask]
@@ -406,7 +406,7 @@ def cancel_reservation(df, today, offices, excel):
                 periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
         
             for period_segment in periods_to_check:
-                specific_mask = (matching_rows['Période'] == period_segment)
+                specific_mask = (matching_rows['Créneau'] == period_segment)
                 # Obtenez les lignes spécifiques pour cette période
                 period_rows = df.loc[mask & specific_mask]
         
