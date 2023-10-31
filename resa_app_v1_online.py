@@ -55,7 +55,7 @@ def load_image(img_name):
         width, height = image.size
         
         # Calculez la nouvelle hauteur
-        new_height = int(height * 0.50)  # Réduire de 33% équivant à multiplier par 0.67
+        new_height = int(height * 0.67)  # Réduire de 33% équivant à multiplier par 0.67
         
         # Redimensionnez l'image
         image_resized = image.resize((width, new_height))
