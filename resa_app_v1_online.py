@@ -187,70 +187,69 @@ def reserve_office(df, today, offices, excel):
         "Choisissez une période de visualisation des données",
             ("1 jour spécifique", "Dans les 15 jours à venir"))
     
-    # st.write("---")
+    st.write("---")
             
     if option == "1 jour spécifique":
-        with st.form(key='reservation_form1'):
-            col1, col2, col3 = st.columns([1, 1, 1])
-            with col1:
-                selected_date = st.date_input("Sélectionnez une date", value=today)
-            with col2:
-                period = st.radio("Quel créneau souhaitez-vous ?", 
-                              ("Matin", "Après-midi", "Journée"), index=2
-                              )
-            with col3:
-                office = st.radio("Quel bureau préférez vous ?", tuple(offices))
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            selected_date = st.date_input("Sélectionnez une date", value=today)
+        with col2:
+            period = st.radio("Quel créneau souhaitez-vous ?", 
+                          ("Matin", "Après-midi", "Journée"), index=2
+                          )
+        with col3:
+            office = st.radio("Quel bureau préférez vous ?", tuple(offices))
 
-            display_selected_data(df, selected_date, 1, period)
+        display_selected_data(df, selected_date, 1, period)
+                
+        # Input pour le nom sous lequel la réservation sera faite
+        col1, col2 = st.columns([1,3])
+        with col1:
+            name = st.text_input("Entrez votre nom pour la réservation")
+
+        # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
+        if st.button("Réserver"):
+            if name:  # Vérifiez si le nom n'est pas vide
+                try:
+                    # Créez un masque pour les lignes correspondant à la date sélectionnée et à la période.
+                    mask = (df['Date'] == pd.Timestamp(selected_date))
+        
+                    if period != 'Journée':
+                        mask &= (df['Créneau'] == period)
                     
-            # Input pour le nom sous lequel la réservation sera faite
-            col1, col2 = st.columns([1,3])
-            with col1:
-                name = st.text_input("Entrez votre nom pour la réservation")
-
-            # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
-            if st.form_submit_button("Réserver", key=2):
-                if name:  # Vérifiez si le nom n'est pas vide
-                    try:
-                        # Créez un masque pour les lignes correspondant à la date sélectionnée et à la période.
-                        mask = (df['Date'] == pd.Timestamp(selected_date))
-            
-                        if period != 'Journée':
-                            mask &= (df['Créneau'] == period)
-                        
-                        # Trouver les lignes qui correspondent à nos critères
-                        matching_rows = df.loc[mask]
-            
-                        if not matching_rows.empty:
-                            # Si la période est "Journée", nous voulons vérifier la disponibilité pour chaque segment de la journée.
-                            if period == 'Journée':
-                                periods_to_check = ['Matin', 'Après-midi']
-                            else:
-                                periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
-            
-                            for period_segment in periods_to_check:
-                                specific_mask = (matching_rows['Créneau'] == period_segment)
-                                # Vérifier si le bureau est disponible pour la réservation
-                                if 'Disponible' in matching_rows.loc[specific_mask, office].values:
-                                    # Bureau disponible, donc mise à jour pour indiquer qu'il est maintenant réservé.
-                                    df.loc[mask & specific_mask, office] = name
-                                else:
-                                    # Si le bureau n'est pas disponible (c'est-à-dire que la valeur n'est pas "Disponible"), nous affichons une erreur.
-                                    st.error(f"Le {office} n'est pas disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
-                                    return  # Nous retournons ici pour éviter d'essayer de sauvegarder des modifications ou d'autres opérations.
-                            
-                            # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
-                            # Nous allons maintenant sauvegarder le DataFrame mis à jour.
-                            save_df_to_s3(df, BUCKET_NAME, excel)
-                            st.success("Réservation effectuée avec succès.")
-                            st.experimental_rerun()
+                    # Trouver les lignes qui correspondent à nos critères
+                    matching_rows = df.loc[mask]
+        
+                    if not matching_rows.empty:
+                        # Si la période est "Journée", nous voulons vérifier la disponibilité pour chaque segment de la journée.
+                        if period == 'Journée':
+                            periods_to_check = ['Matin', 'Après-midi']
                         else:
-                            st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
-            
-                    except Exception as e:
-                        st.error(f"Une erreur s'est produite lors de la mise à jour de la réservation : {e}")
-                else:
-                    st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
+                            periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
+        
+                        for period_segment in periods_to_check:
+                            specific_mask = (matching_rows['Créneau'] == period_segment)
+                            # Vérifier si le bureau est disponible pour la réservation
+                            if 'Disponible' in matching_rows.loc[specific_mask, office].values:
+                                # Bureau disponible, donc mise à jour pour indiquer qu'il est maintenant réservé.
+                                df.loc[mask & specific_mask, office] = name
+                            else:
+                                # Si le bureau n'est pas disponible (c'est-à-dire que la valeur n'est pas "Disponible"), nous affichons une erreur.
+                                st.error(f"Le {office} n'est pas disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
+                                return  # Nous retournons ici pour éviter d'essayer de sauvegarder des modifications ou d'autres opérations.
+                        
+                        # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
+                        # Nous allons maintenant sauvegarder le DataFrame mis à jour.
+                        save_df_to_s3(df, BUCKET_NAME, excel)
+                        st.success("Réservation effectuée avec succès.")
+                        st.experimental_rerun()
+                    else:
+                        st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
+        
+                except Exception as e:
+                    st.error(f"Une erreur s'est produite lors de la mise à jour de la réservation : {e}")
+            else:
+                st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
         
     if option == "Dans les 15 jours à venir":
         
