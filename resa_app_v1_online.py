@@ -209,7 +209,7 @@ def reserve_office(df, today, offices, excel):
                 name = st.text_input("Entrez votre nom pour la réservation")
 
             # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
-            if st.button("Réserver", key=2):
+            if st.form_submit_button("Réserver", key=2):
                 if name:  # Vérifiez si le nom n'est pas vide
                     try:
                         # Créez un masque pour les lignes correspondant à la date sélectionnée et à la période.
