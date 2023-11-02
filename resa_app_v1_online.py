@@ -449,7 +449,7 @@ def main():
             "image": "aquarium.jpg",
             "excel": "FlexAqua.xlsx",
             "sidebar_image": "aqua.png",
-            "offices": ["Némo", "Sébastien", "Tamatoa", "Polochon"]
+            "offices": ["Némo", "Hank", "Tamatoa", "Polochon"]
         }
     }
 
