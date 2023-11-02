@@ -391,44 +391,45 @@ def cancel_reservation(df, today, offices, excel):
     with col3:
         office = st.radio("Quel bureau préférez vous ?", tuple(offices))
 
-    st.write("---")
-    display_selected_data(df, selected_date, 1, period)
-    
-   
-    # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
-    if st.button("Annuler le créneau"):
-        mask = (df['Date'] == pd.Timestamp(selected_date))
+    with st.form(key="cancel"):
+        display_selected_data(df, selected_date, 1, period)
         
-        if period != 'Journée':
-            mask &= (df['Créneau'] == period)
-        
-        # Trouver les lignes qui correspondent à nos critères
-        matching_rows = df.loc[mask]
-        
-        if not matching_rows.empty:
-            # Si la période est "Journée", nous voulons vérifier la disponibilité pour chaque segment de la journée.
-            if period == 'Journée':
-                periods_to_check = ['Matin', 'Après-midi']
+       
+        cancel = st.button("Annuler le créneau")
+        # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
+        if cancel:
+            mask = (df['Date'] == pd.Timestamp(selected_date))
+            
+            if period != 'Journée':
+                mask &= (df['Créneau'] == period)
+            
+            # Trouver les lignes qui correspondent à nos critères
+            matching_rows = df.loc[mask]
+            
+            if not matching_rows.empty:
+                # Si la période est "Journée", nous voulons vérifier la disponibilité pour chaque segment de la journée.
+                if period == 'Journée':
+                    periods_to_check = ['Matin', 'Après-midi']
+                else:
+                    periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
+            
+                for period_segment in periods_to_check:
+                    specific_mask = (matching_rows['Créneau'] == period_segment)
+                    # Obtenez les lignes spécifiques pour cette période
+                    period_rows = df.loc[mask & specific_mask]
+            
+                    # Vérifiez chaque bureau dans les lignes sélectionnées pour cette période
+                    for index, row in period_rows.iterrows():
+                        if row[office] != 'Disponible':  # Si le bureau n'est pas disponible
+                            # Mettre à jour le statut du bureau pour le rendre disponible
+                            df.at[index, office] = 'Disponible'
+                            st.success(f"Le {office} est maintenant disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
+            
+                # Sauvegarder les modifications dans le DataFrame
+                save_df_to_s3(df, BUCKET_NAME, excel)
+                st.experimental_rerun()
             else:
-                periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
-        
-            for period_segment in periods_to_check:
-                specific_mask = (matching_rows['Créneau'] == period_segment)
-                # Obtenez les lignes spécifiques pour cette période
-                period_rows = df.loc[mask & specific_mask]
-        
-                # Vérifiez chaque bureau dans les lignes sélectionnées pour cette période
-                for index, row in period_rows.iterrows():
-                    if row[office] != 'Disponible':  # Si le bureau n'est pas disponible
-                        # Mettre à jour le statut du bureau pour le rendre disponible
-                        df.at[index, office] = 'Disponible'
-                        st.success(f"Le {office} est maintenant disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
-        
-            # Sauvegarder les modifications dans le DataFrame
-            save_df_to_s3(df, BUCKET_NAME, excel)
-            st.experimental_rerun()
-        else:
-            st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
+                st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
 
 
 
