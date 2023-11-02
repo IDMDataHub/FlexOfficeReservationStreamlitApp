@@ -203,7 +203,9 @@ def reserve_office(df, today, offices, excel):
         display_selected_data(df, selected_date, 1, period)
                 
         # Input pour le nom sous lequel la réservation sera faite
-        name = st.text_input("Entrez votre nom pour la réservation")
+        col1, col2 = st.columns([3,1])
+        with col1:
+            name = st.text_input("Entrez votre nom pour la réservation")
 
         # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
         if st.button("Réserver"):
@@ -311,10 +313,9 @@ def reserve_office(df, today, offices, excel):
 
                     # Bouton de soumission du formulaire
                     col1, col2 = st.columns([3,1])
-                    with col2:
-                        submitted = st.form_submit_button("Soumettre les réservations")
                     with col1:
                         name = st.text_input("Entrez votre nom pour la réservation")
+                    submitted = st.form_submit_button("Soumettre les réservations")
                     
                 # Après la soumission du formulaire, affichez les sélections de l'utilisateur ou traitez-les selon vos besoins                      
                 if submitted:
