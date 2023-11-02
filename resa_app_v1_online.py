@@ -185,7 +185,7 @@ def visualize_data(df, today):
 def reserve_office(df, today, offices, excel):
     option = st.radio(
         "Choisissez une période de visualisation des données",
-            ("1 jour spécifique", "Plusieurs jours dans le mois"))
+            ("1 jour spécifique", "Dans les 15 jours à venir"))
     
     st.write("---")
             
@@ -249,7 +249,7 @@ def reserve_office(df, today, offices, excel):
             else:
                 st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
         
-    if option == "Plusieurs jours dans le mois":
+    if option == "Dans les 15 jours à venir":
         
                   
         # Définir les noms des colonnes qui correspondent aux bureaux
@@ -260,7 +260,7 @@ def reserve_office(df, today, offices, excel):
             st.write("Veuillez sélectionner les créneaux de réservation")
             
             start_date = datetime.date.today()
-            end_date = start_date + datetime.timedelta(days=30)  # ou toute autre logique pour définir la période
+            end_date = start_date + datetime.timedelta(days=15)  # ou toute autre logique pour définir la période
         
             # Vous devez vous assurer que les dates sélectionnées sont valides (la date de fin doit venir après la date de début)
             if start_date > end_date:
