@@ -395,7 +395,7 @@ def cancel_reservation(df, today, offices, excel):
         display_selected_data(df, selected_date, 1, period)
         
        
-        cancel = st.button("Annuler le créneau")
+        cancel = st.form_submit_button("Annuler le créneau")
         # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
         if cancel:
             mask = (df['Date'] == pd.Timestamp(selected_date))
