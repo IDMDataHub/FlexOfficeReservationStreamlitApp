@@ -187,9 +187,10 @@ def reserve_office(df, today, offices, excel):
         "Choisissez une période de visualisation des données",
             ("1 jour spécifique", "Dans les 15 jours à venir"))
     
-    st.write("---")
+    # st.write("---")
             
     if option == "1 jour spécifique":
+        with st.form(key='reservation_form1'):
         col1, col2, col3 = st.columns([1, 1, 1])
         with col1:
             selected_date = st.date_input("Sélectionnez une date", value=today)
@@ -258,7 +259,7 @@ def reserve_office(df, today, offices, excel):
         office_columns = offices
         
         # Création d'un formulaire pour soumettre les réservations
-        with st.form(key='reservation_form'):
+        with st.form(key='reservation_form2'):
             st.write("Veuillez sélectionner les créneaux de réservation")
             
             start_date = datetime.date.today()
