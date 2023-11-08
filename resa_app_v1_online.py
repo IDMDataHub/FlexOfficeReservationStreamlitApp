@@ -444,7 +444,7 @@ def main():
             "excel": "FlexAqua.xlsx",
             "sidebar_image": "aqua.png",
             "offices": ["Némo", "Hank", "Tamatoa", "Polochon"]
-            }
+            },
         "Jungle": {
             "image": "serre.jpg",
             "excel": "FlexSerre.xlsx",
