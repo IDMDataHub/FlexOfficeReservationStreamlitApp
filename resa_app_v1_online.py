@@ -439,18 +439,18 @@ def main():
 
     # Configuration pour chaque flex office
     flex_config = {
+        "Aquarium": {
+            "image": "aquarium.jpg",
+            "excel": "FlexAqua.xlsx",
+            "sidebar_image": "aqua.png",
+            "offices": ["Némo", "Hank", "Tamatoa", "Polochon"]
+            }
         "Jungle": {
             "image": "serre.jpg",
             "excel": "FlexSerre.xlsx",
             "sidebar_image": "jungle.png",
             "offices": ["Baloo", "Stitch", "Rajah", "Meeko"]
         },
-        "Aquarium": {
-            "image": "aquarium.jpg",
-            "excel": "FlexAqua.xlsx",
-            "sidebar_image": "aqua.png",
-            "offices": ["Némo", "Hank", "Tamatoa", "Polochon"]
-        }
     }
 
     # Initialisation de st.session_state
