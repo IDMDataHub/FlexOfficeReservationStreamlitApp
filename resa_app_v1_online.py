@@ -238,7 +238,7 @@ def reserve_office(df, today, offices, excel):
                                     df.loc[mask & specific_mask, office] = name
                                 else:
                                     # Si le bureau n'est pas disponible (c'est-à-dire que la valeur n'est pas "Disponible"), nous affichons une erreur.
-                                    st.error(f"Le {office} n'est pas disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
+                                    st.error(f"Le bureau {office} n'est pas disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
                                     return  # Nous retournons ici pour éviter d'essayer de sauvegarder des modifications ou d'autres opérations.
                             
                             # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
@@ -423,7 +423,7 @@ def cancel_reservation(df, today, offices, excel):
                         if row[office] != 'Disponible':  # Si le bureau n'est pas disponible
                             # Mettre à jour le statut du bureau pour le rendre disponible
                             df.at[index, office] = 'Disponible'
-                            st.success(f"Le {office} est maintenant disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
+                            st.success(f"Le bureau {office} est maintenant disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
             
                 # Sauvegarder les modifications dans le DataFrame
                 save_df_to_s3(df, BUCKET_NAME, excel)
