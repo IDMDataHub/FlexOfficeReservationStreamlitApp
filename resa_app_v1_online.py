@@ -450,7 +450,13 @@ def main():
             "excel": "FlexSerre.xlsx",
             "sidebar_image": "jungle.png",
             "offices": ["Baloo", "Stitch", "Rajah", "Meeko"]
-        },
+            },
+        "I-Motion OB.221": {
+            "image": "serre.jpg",
+            "excel": "FlexIMA.xlsx",
+            "sidebar_image": "aqua.png"
+            "offices": ["Bureau 1", "Bureau 2", "Bureau 3"]
+            }    
     }
 
     # Initialisation de st.session_state
