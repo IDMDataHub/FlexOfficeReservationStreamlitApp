@@ -454,7 +454,7 @@ def main():
         "I-Motion OB.221": {
             "image": "serre.jpg",
             "excel": "FlexIMA.xlsx",
-            "sidebar_image": None,
+            "sidebar_image": "aqua.png",
             "offices": ["Bureau 1", "Bureau 2", "Bureau 3"]
             }    
     }
