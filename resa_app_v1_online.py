@@ -55,7 +55,7 @@ def load_image(img_name):
         width, height = image.size
         
         # Calculez la nouvelle hauteur
-        new_height = int(height * 1)  # Réduire de 33% équivant à multiplier par 0.67
+        new_height = int(height * 0.67)  # Réduire de 33% équivant à multiplier par 0.67
         
         # Redimensionnez l'image
         image_resized = image.resize((width, new_height))
@@ -68,17 +68,7 @@ def load_image_sidebar(img_name):
     img_path = os.path.join(IMG_PATH, img_name)
     if os.path.exists(img_path):
         image = Image.open(img_path)
-
-        # Obtenez les dimensions originales de l'image
-        width, height = image.size
-        
-        # Calculez la nouvelle hauteur
-        new_height = int(height * 0.67)  # Réduire de 33% équivant à multiplier par 0.67
-
-        # Redimensionnez l'image
-        image_resized = image.resize((width, new_height))
-
-        st.sidebar.image(image_resized, use_column_width=True)
+        st.sidebar.image(image, use_column_width=True)
     else:
         st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")    
 
