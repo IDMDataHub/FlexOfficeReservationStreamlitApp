@@ -483,6 +483,7 @@ def main():
         load_image_sidebar(flex_config[flex]["sidebar_image"])
 
         tab_selection = st.sidebar.selectbox("Choisissez un onglet", ["Visualisation", "Réservation", "Annulation"])
+        st.write("---")
         load_image_sidebar(flex_config[flex]["plan"])
         if tab_selection == "Visualisation":
             visualize_data(df, today)
