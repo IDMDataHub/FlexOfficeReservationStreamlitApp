@@ -443,18 +443,21 @@ def main():
             "image": "aquarium.jpg",
             "excel": "FlexAqua.xlsx",
             "sidebar_image": "aqua.png",
+            "plan": "plan_aqua.png",
             "offices": ["Némo", "Hank", "Tamatoa", "Polochon"]
             },
         "Jungle": {
             "image": "serre.jpg",
             "excel": "FlexSerre.xlsx",
             "sidebar_image": "jungle.png",
+            "plan": "plan_jungle.png",
             "offices": ["Baloo", "Stitch", "Rajah", "Meeko"]
             },
         # "I-Motion OB.221": {
         #     "image": "clinicaltrial.jpg",
         #     "excel": "FlexIMA.xlsx",
         #     "sidebar_image": "clinicaltrial.png",
+        #     "plan": "plan_jungle.png",
         #     "offices": ["Bureau 1", "Bureau 2", "Bureau 3"]
         #     }    
     }
@@ -480,7 +483,7 @@ def main():
         load_image_sidebar(flex_config[flex]["sidebar_image"])
 
         tab_selection = st.sidebar.selectbox("Choisissez un onglet", ["Visualisation", "Réservation", "Annulation"])
-
+        load_image_sidebar(flex_config[flex]["sidebar_image"])
         if tab_selection == "Visualisation":
             visualize_data(df, today)
         elif tab_selection == "Réservation":
