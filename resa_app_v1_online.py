@@ -453,13 +453,13 @@ def main():
             "plan": "plan_jungle.png",
             "offices": ["Baloo", "Stitch", "Rajah", "Meeko"]
             },
-        # "I-Motion OB.221": {
-        #     "image": "clinicaltrial.jpg",
-        #     "excel": "FlexIMA.xlsx",
-        #     "sidebar_image": "clinicaltrial.png",
-        #     "plan": "plan_jungle.png",
-        #     "offices": ["Bureau 1", "Bureau 2", "Bureau 3"]
-        #     }    
+        "IMA": {
+            "image": "clinicaltrial.jpg",
+            "excel": "FlexIMA.xlsx",
+            "sidebar_image": "clinicaltrial.png",
+            "plan": "plan_jungle.png",
+            "offices": ["Bureau 1", "Bureau 2", "Bureau 3"]
+            }    
     }
 
     # Initialisation de st.session_state
