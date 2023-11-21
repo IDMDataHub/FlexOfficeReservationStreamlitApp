@@ -164,28 +164,28 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
 def visualize_data(df, today):
     option = st.radio(
         "Choisissez une période de visualisation des données",
-        ("Aujourd'hui", "1 jour spécifique", "1 semaine glissante", "1 mois glissant")
+        ("Dans les 15 jours", "1 jour spécifique")
     )
     st.write("---")
 
-    if option == "Aujourd'hui":
-        display_selected_data(df, today, 1)
-    elif option == "1 jour spécifique":
+    # if option == "Aujourd'hui":
+    #     display_selected_data(df, today, 1)
+    if option == "1 jour spécifique":
         col1, col2 = st.columns([1, 4])
         with col1:
             selected_date = st.date_input("Sélectionnez une date", value=today)
         if selected_date:
             display_selected_data(df, selected_date, 1)
-    elif option == "1 semaine glissante":
-        display_selected_data(df, today, 7)
-    elif option == "1 mois glissant":
-        display_selected_data(df, today, 30)
+    elif option == "Dans les 15 jours":
+        display_selected_data(df, today, 15)
+    # elif option == "1 mois glissant":
+    #     display_selected_data(df, today, 30)
 
             
 def reserve_office(df, today, offices, excel):
     option = st.radio(
         "Choisissez une période de visualisation des données",
-            ("1 jour spécifique", "Dans les 15 jours à venir"))
+            ("1 jour spécifique", "Dans les 15 jours"))
     
     # st.write("---")
             
@@ -254,7 +254,7 @@ def reserve_office(df, today, offices, excel):
                 else:
                     st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
         
-    if option == "Dans les 15 jours à venir":
+    if option == "Dans les 15 jours":
         
                   
         # Définir les noms des colonnes qui correspondent aux bureaux
