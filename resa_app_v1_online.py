@@ -475,14 +475,14 @@ def main():
             st.write("Mot de passe incorrect. Veuillez réessayer.")
 
     if st.session_state.authenticated:
-        flex = st.sidebar.selectbox("Choisissez votre flex office de rêve", list(flex_config.keys()), index=0)
+        flex = st.sidebar.selectbox("Choisissez votre flex office", list(flex_config.keys()), index=0)
 
         # Appliquer la configuration en fonction du choix
         load_image(flex_config[flex]["image"])
         df = load_file_from_s3(BUCKET_NAME, flex_config[flex]["excel"])
         load_image_sidebar(flex_config[flex]["sidebar_image"])
 
-        tab_selection = st.sidebar.selectbox("Choisissez un onglet", ["Visualisation", "Réservation", "Annulation"])
+        tab_selection = st.sidebar.selectbox("Que souhaitez-vous faire ?", ["Visualisation", "Réservation", "Annulation"])
         st.write("---")
         load_image_sidebar(flex_config[flex]["plan"])
         if tab_selection == "Visualisation":
