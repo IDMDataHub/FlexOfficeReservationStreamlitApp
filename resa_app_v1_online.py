@@ -457,7 +457,7 @@ def main():
             "image": "clinicaltrial.jpg",
             "excel": "FlexIMA.xlsx",
             "sidebar_image": "clinicaltrial.png",
-            "plan": "plan_jungle.png",
+            "plan": "plan_ima.png",
             "offices": ["Bureau 1", "Bureau 2", "Bureau 3"]
             }    
     }
