@@ -283,6 +283,7 @@ def reserve_office(df, today, offices, excel):
                     header_cols = st.columns(6)
                     header_cols[0].write("Date")
                     header_cols[1].write("Créneau")
+                    st.write(office_columns)
                     for i, office in enumerate(office_columns, start=2):
                         header_cols[i].write(office)
                             
