@@ -476,6 +476,7 @@ def main():
 
     if st.session_state.authenticated:
         flex = st.sidebar.selectbox("Choisissez votre flex office", list(flex_config.keys()), index=0)
+        st.write(flex)
 
         # Appliquer la configuration en fonction du choix
         load_image(flex_config[flex]["image"])
