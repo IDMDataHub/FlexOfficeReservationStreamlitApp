@@ -285,6 +285,8 @@ def reserve_office(df, today, offices, excel):
                     header_cols[1].write("Créneau")
                     st.write(office_columns)
                     for i, office in enumerate(office_columns, start=2):
+                        st.weite(i)
+                        st.write(office)
                         header_cols[i].write(office)
                             
                     # Création d'un dictionnaire pour stocker les sélections des utilisateurs
