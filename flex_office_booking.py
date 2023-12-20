@@ -296,7 +296,7 @@ def reserve_office(df, today, offices, excel):
                             period = row['Créneau']
                             user_selections[f"{date_str}-{period}"] = {}
                             
-                            cols = st.columns(6)
+                            cols = st.columns(len(office_columns)+2)
                             cols[0].write(date_str)
                             cols[1].write(period)
                 
