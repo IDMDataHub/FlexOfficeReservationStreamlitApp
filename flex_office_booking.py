@@ -280,7 +280,7 @@ def reserve_office(df, today, offices, excel):
                     st.write("Aucune donnée de réservation disponible pour la période sélectionnée.")
                 else:
                     # Créer une rangée pour les en-têtes de colonne
-                    header_cols = st.columns(len(office_columns))
+                    header_cols = st.columns(len(office_columns)+2)
                     header_cols[0].write("Date")
                     header_cols[1].write("Créneau")
                     for i, office in enumerate(office_columns, start=2):
