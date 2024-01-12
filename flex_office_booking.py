@@ -185,7 +185,7 @@ def visualize_data(df, today):
 def reserve_office(df, today, offices, excel):
     option = st.radio(
         "Choisissez une période de visualisation des données",
-            ("1 jour spécifique", "Dans les 15 jours"))
+            ("1 jour spécifique", "Dans les 30 jours"))
     
     # st.write("---")
             
