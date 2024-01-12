@@ -168,8 +168,7 @@ def visualize_data(df, today):
     )
     st.write("---")
 
-    # if option == "Aujourd'hui":
-    #     display_selected_data(df, today, 1)
+
     if option == "1 jour spécifique":
         col1, col2 = st.columns([1, 4])
         with col1:
@@ -178,16 +177,12 @@ def visualize_data(df, today):
             display_selected_data(df, selected_date, 1)
     elif option == "Dans les 15 jours":
         display_selected_data(df, today, 15)
-    # elif option == "1 mois glissant":
-    #     display_selected_data(df, today, 30)
 
             
 def reserve_office(df, today, offices, excel):
     option = st.radio(
         "Choisissez une période de visualisation des données",
             ("1 jour spécifique", "Dans le mois"))
-    
-    # st.write("---")
             
     if option == "1 jour spécifique":
         with st.form(key='reservation_form1'):
