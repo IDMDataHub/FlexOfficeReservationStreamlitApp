@@ -429,7 +429,8 @@ def cancel_reservation(df, today, offices, excel):
 
 
 def main():
-    st.set_page_config(layout="wide")
+    st.set_page_config(layout="wide", page_icon=":clock3:", page_title="Flex Offices")
+
     today = datetime.date.today()
 
     # Configuration pour chaque flex office
