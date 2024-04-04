@@ -463,12 +463,14 @@ def main():
         st.session_state.authenticated = False
 
     if not st.session_state.authenticated:
-        mot_de_passe_saisi = st.text_input("Entrez le mot de passe", type="password").upper()
+        espace1, col_mdp, espace2 = st.columns([2, 3, 2])
+        with col_mdp:
+            mot_de_passe_saisi = st.text_input("Entrez le mot de passe", type="password").upper()
 
-        if mot_de_passe_saisi == MOT_DE_PASSE:
-            st.session_state.authenticated = True
-        else:
-            st.write("Mot de passe incorrect. Veuillez réessayer.")
+            if mot_de_passe_saisi == MOT_DE_PASSE:
+                st.session_state.authenticated = True
+            else:
+                st.write("Mot de passe incorrect. Veuillez réessayer.")
 
     if st.session_state.authenticated:
         flex = st.sidebar.selectbox("Choisissez votre flex office", list(flex_config.keys()), index=0)
