@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 23 15:15:28 2023
-@author: m.jacoupy
-"""
+#####################################################################
+# =========================== LIBRAIRIES ========================== #
+#####################################################################
 
 import streamlit as st
 import pandas as pd
@@ -13,7 +11,9 @@ import boto3
 from io import BytesIO
 
 
-# Constantes
+#####################################################################
+# =========================== CONSTANTES ========================== #
+#####################################################################
 
 GENERAL_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 IMG_PATH = os.path.join(GENERAL_PATH, "images/")
@@ -21,12 +21,36 @@ BUCKET_NAME = "bucketidb"
 MOT_DE_PASSE = st.secrets["APP_MDP"]
 
 
+#####################################################################
+# ========================= INFO GENERALES========================= #
+#####################################################################
+
 s3 = boto3.resource('s3',
                   aws_access_key_id=st.secrets['AWS_ACCESS_KEY_ID'],
                   aws_secret_access_key=st.secrets['AWS_SECRET_ACCESS_KEY'])
 
-# Chargement des données et des images
+
+#####################################################################
+# ==================== FONCTIONS D'ASSISTANCES ==================== #
+#####################################################################
+
+# ========================================================================================================================================
+# CHARGEMENT DE DONNEES
 def load_file_from_s3(bucket_name, file_name):
+    """
+    Charge un fichier depuis un bucket S3 spécifié et le convertit en un DataFrame pandas.
+
+    Parameters:
+    - bucket_name (str): Le nom du bucket S3 où le fichier est stocké.
+    - file_name (str): Le nom du fichier à charger.
+
+    Returns:
+    - pandas.DataFrame: Un DataFrame contenant les données du fichier chargé.
+
+    Raises:
+    - FileNotFoundError: Si le fichier spécifié n'existe pas dans le bucket S3.
+    - Exception: Pour toute autre erreur rencontrée lors de l'accès au fichier S3.
+    """
     # Vérifiez si l'objet existe dans le bucket
     obj = s3.Object(bucket_name, file_name)
     try:
@@ -47,6 +71,18 @@ def load_file_from_s3(bucket_name, file_name):
     return df
 
 def load_image(img_name):
+    """
+    Charge et affiche une image depuis le dossier des images, en ajustant sa taille.
+
+    Parameters:
+    - img_name (str): Le nom de l'image à charger et à afficher.
+
+    Returns:
+    None
+
+    Notes:
+    Affiche un avertissement si l'image spécifiée n'existe pas dans le dossier des images.
+    """
     img_path = os.path.join(IMG_PATH, img_name)
     if os.path.exists(img_path):
         image = Image.open(img_path)
@@ -65,6 +101,18 @@ def load_image(img_name):
         st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")
 
 def load_image_sidebar(img_name):
+    """
+    Charge et affiche une image dans la barre latérale de l'application Streamlit.
+
+    Parameters:
+    - img_name (str): Le nom de l'image à charger et à afficher dans la barre latérale.
+
+    Returns:
+    None
+
+    Notes:
+    Affiche un avertissement si l'image spécifiée n'existe pas dans le dossier des images.
+    """
     img_path = os.path.join(IMG_PATH, img_name)
     if os.path.exists(img_path):
         image = Image.open(img_path)
@@ -72,7 +120,23 @@ def load_image_sidebar(img_name):
     else:
         st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")    
 
+# ========================================================================================================================================
+# SAUVEGARDE
 def save_df_to_s3(df, bucket_name, file_name):
+    """
+    Sauvegarde un DataFrame pandas dans un fichier Excel et le stocke dans un bucket S3.
+
+    Parameters:
+    - df (pandas.DataFrame): Le DataFrame à sauvegarder.
+    - bucket_name (str): Le nom du bucket S3 où le fichier sera enregistré.
+    - file_name (str): Le nom sous lequel le fichier sera enregistré dans le bucket S3.
+
+    Returns:
+    None
+
+    Notes:
+    Le fichier est sauvegardé au format Excel (xlsx).
+    """
     # Créez un buffer pour stocker le fichier Excel
     excel_buffer = BytesIO()
 
@@ -93,16 +157,18 @@ def save_df_to_s3(df, bucket_name, file_name):
         ContentType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
-def apply_custom_styles(cell_contents, available_color='#29AB87'):  # Ici, '#00FF00' est l'équivalent hexadécimal de 'lime'
+# ========================================================================================================================================
+# GRAPH ET AFFICHAGE
+def apply_custom_styles(cell_contents, available_color='#29AB87'):
     """
-    Appliquez des styles personnalisés à chaque cellule en fonction de son contenu.
-    
-    Args:
-    - cell_contents: Le contenu de la cellule.
-    - available_color: La couleur à appliquer pour les cellules 'Disponible'. Par défaut, c'est '#00FF00' (lime).
-    
+    Applique des styles personnalisés à chaque cellule d'un DataFrame en fonction de son contenu.
+
+    Parameters:
+    - cell_contents (various): Le contenu de la cellule à laquelle appliquer le style.
+    - available_color (str, optional): La couleur à utiliser pour les cellules marquées comme 'Disponible'. Par défaut à '#29AB87'.
+
     Returns:
-    Le style à appliquer pour la cellule.
+    - str: Une chaîne CSS décrivant le style à appliquer à la cellule.
     """
     if cell_contents == 'Disponible':
         return f'background-color: {available_color}'
@@ -113,18 +179,20 @@ def apply_custom_styles(cell_contents, available_color='#29AB87'):  # Ici, '#00F
     else:
         return f'background-color: #ff8C00'  # Pour les autres cellules, pas 'Disponible' ou les valeurs spécifiques ignorées
 
-
- 
-def is_weekend(date):
-    return date.weekday() >= 5  # 5 pour samedi, 6 pour dimanche
-
-
 # Affichage des données
 def display_selected_data(df, start_date, days_count, period='Journée'):
     """
-    Affiche les données pour la période sélectionnée, en appliquant les styles nécessaires.
-    """
+    Affiche les données pour une période et un type de créneau sélectionnés, avec des styles personnalisés.
 
+    Parameters:
+    - df (pandas.DataFrame): Le DataFrame contenant les données à afficher.
+    - start_date (datetime.date): La date de début de la période à afficher.
+    - days_count (int): Le nombre de jours à partir de la date de début à inclure dans l'affichage.
+    - period (str, optional): Le type de créneau à afficher ('Matin', 'Après-midi', 'Journée'). Par défaut à 'Journée'.
+
+    Returns:
+    None
+    """
     try:
         # Vérifiez si la date de début est dans le passé
         if start_date < datetime.datetime.today().date():
@@ -160,47 +228,90 @@ def display_selected_data(df, start_date, days_count, period='Journée'):
     except Exception as e:
         st.error(f"Une erreur s'est produite lors de l'affichage des données : {e}")
 
-
 def visualize_data(df, today):
+    """
+    Permet à l'utilisateur de choisir une période de visualisation des données et affiche les données correspondantes.
+
+    Parameters:
+    - df (pandas.DataFrame): Le DataFrame contenant les données à visualiser.
+    - today (datetime.date): La date actuelle, utilisée comme point de départ pour les sélections de dates.
+
+    Returns:
+    None
+
+    Notes:
+    Propose à l'utilisateur de choisir entre visualiser les données pour un jour spécifique ou pour les 15 prochains jours.
+    """
     option = st.radio(
         "Choisissez une période de visualisation des données",
         ("Dans les 15 jours", "1 jour spécifique")
     )
     st.write("---")
 
-
     if option == "1 jour spécifique":
-        col1, col2 = st.columns([1, 4])
-        with col1:
+        sel_periode, _ = st.columns([1, 4])
+        with sel_periode:
             selected_date = st.date_input("Sélectionnez une date", value=today)
         if selected_date:
             display_selected_data(df, selected_date, 1)
     elif option == "Dans les 15 jours":
         display_selected_data(df, today, 15)
 
-            
+# ========================================================================================================================================
+# CALCULS
+def is_weekend(date):
+    """
+    Détermine si une date donnée correspond à un week-end.
+
+    Parameters:
+    - date (datetime.date): La date à vérifier.
+
+    Returns:
+    - bool: True si la date est un samedi ou un dimanche, False sinon.
+    """
+    return date.weekday() >= 5  # 5 pour samedi, 6 pour dimanche
+
+# ========================================================================================================================================
+# CREATION ET MODIFICATION      
 def reserve_office(df, today, offices, excel):
+    """
+    Permet à l'utilisateur de réserver un bureau pour une date spécifique ou dans le mois en cours. 
+    L'utilisateur peut choisir une date, une période (matin, après-midi, journée) et un bureau spécifique pour la réservation.
+
+    Parameters:
+    - df (pandas.DataFrame): DataFrame contenant les données de réservation des bureaux.
+    - today (datetime.date): La date actuelle, utilisée comme référence pour les réservations.
+    - offices ([str]): Liste des bureaux disponibles pour la réservation.
+    - excel (str): Le nom du fichier Excel dans le bucket S3 où les données de réservation sont stockées.
+
+    Returns:
+    None
+
+    Notes:
+    Après la soumission du formulaire de réservation par l'utilisateur, la fonction vérifie la disponibilité du bureau sélectionné
+    pour la période donnée et met à jour le DataFrame et le fichier Excel sur S3 en conséquence.
+    """
     option = st.radio(
         "Choisissez une période de visualisation des données",
             ("1 jour spécifique", "Dans le mois"))
             
     if option == "1 jour spécifique":
         with st.form(key='reservation_form1'):
-            col1, col2, col3 = st.columns([1, 1, 1])
-            with col1:
+            col_date, col_creneau, col_bureau = st.columns([1, 1, 1])
+            with col_date:
                 selected_date = st.date_input("Sélectionnez une date", value=today)
-            with col2:
+            with col_creneau:
                 period = st.radio("Quel créneau souhaitez-vous ?", 
                               ("Matin", "Après-midi", "Journée"), index=2
                               )
-            with col3:
+            with col_bureau:
                 office = st.radio("Quel bureau préférez vous ?", tuple(offices))
 
             display_selected_data(df, selected_date, 1, period)
                     
             # Input pour le nom sous lequel la réservation sera faite
-            col1, col2 = st.columns([1,3])
-            with col1:
+            col_name, _ = st.columns([1,3])
+            with col_name:
                 name = st.text_input("Entrez votre nom pour la réservation")
 
             submitted = st.form_submit_button("Réserver")
@@ -310,8 +421,8 @@ def reserve_office(df, today, offices, excel):
                                 st.write("---")
 
                     # Bouton de soumission du formulaire
-                    col1, col2 = st.columns([1,3])
-                    with col1:
+                    col_name, _ = st.columns([1,3])
+                    with col_name:
                         name = st.text_input("Entrez votre nom pour la réservation")
                     submitted = st.form_submit_button("Soumettre les réservations")
                     
@@ -372,18 +483,31 @@ def reserve_office(df, today, offices, excel):
                     else:
                         st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
 
-
-
 def cancel_reservation(df, today, offices, excel):
-    
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col1:
+    """
+    Permet à l'utilisateur d'annuler une réservation de bureau précédemment effectuée. L'utilisateur peut sélectionner
+    une date, une période (matin, après-midi, journée) et un bureau spécifique dont la réservation doit être annulée.
+
+    Parameters:
+    - df (pandas.DataFrame): DataFrame contenant les données de réservation des bureaux.
+    - today (datetime.date): La date actuelle, utilisée comme référence pour les annulations.
+    - offices ([str]): Liste des bureaux disponibles pour l'annulation de réservations.
+    - excel (str): Le nom du fichier Excel dans le bucket S3 où les données de réservation sont stockées.
+
+    Returns:
+    None
+
+    Notes:
+    La fonction affiche les données de réservation pour la période sélectionnée et permet à l'utilisateur d'annuler 
+    une ou plusieurs réservations. Après confirmation, le DataFrame et le fichier Excel sur S3 sont mis à jour pour refléter l'annulation.
+    """
+    col_date, col_creneau, col_bureau = st.columns([1, 1, 1])
+    with col_date:
         selected_date = st.date_input("Sélectionnez une date", value=today)
-    with col2:
+    with col_creneau:
         period = st.radio("Quel créneau souhaitez-vous ?", 
-                      ("Matin", "Après-midi", "Journée"), index=2
-                      )
-    with col3:
+                      ("Matin", "Après-midi", "Journée"), index=2)
+    with col_bureau:
         office = st.radio("Quel bureau préférez vous ?", tuple(offices))
 
     with st.form(key="cancel"):
@@ -427,8 +551,23 @@ def cancel_reservation(df, today, offices, excel):
                 st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
 
 
+#####################################################################
+# ====================== FONCTION PRINCIPALE ====================== #
+#####################################################################
 
 def main():
+    """
+    Fonction principale exécutant l'application Streamlit pour la réservation de bureaux. 
+    Configure la page, gère l'authentification des utilisateurs, et permet la visualisation, la réservation,
+    et l'annulation des réservations de bureaux.
+
+    Returns:
+    None
+
+    Notes:
+    L'application offre une interface utilisateur pour choisir un 'flex office', visualiser les disponibilités,
+    réserver ou annuler des bureaux. Les utilisateurs doivent s'authentifier avec un mot de passe avant d'accéder aux fonctionnalités.
+    """
     st.set_page_config(layout="wide", page_icon=":clock3:", page_title="Flex Offices")
 
     today = datetime.date.today()
@@ -463,7 +602,7 @@ def main():
         st.session_state.authenticated = False
 
     if not st.session_state.authenticated:
-        espace1, col_mdp, espace2 = st.columns([2, 3, 2])
+        _, col_mdp, _ = st.columns([2, 3, 2])
         with col_mdp:
             mot_de_passe_saisi = st.text_input("Entrez le mot de passe", type="password").upper()
 
