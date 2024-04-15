@@ -600,7 +600,7 @@ def main():
         with col_mdp:
             entered_password = st.text_input("Entrez le mot de passe", type="password").upper()
 
-            if entered_password == "CORRECT_PASSWORD":  # Assume "CORRECT_PASSWORD" is your predefined password
+            if entered_password == "PASSWORD":  # Assume "CORRECT_PASSWORD" is your predefined password
                 st.session_state.authenticated = True
             else:
                 st.error("Mot de passe incorrect. Veuillez réessayer.")
