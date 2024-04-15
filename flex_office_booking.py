@@ -254,7 +254,7 @@ def visualize_data(df, today):
 
     if option == "1 jour spécifique":
         sel_period, _ = st.columns([1, 4])  # Set up a column for user input
-        with sel_periode
+        with sel_periode:
             selected_date = st.date_input("Sélectionnez une date", value=today)  # Date picker for a specific day
         if selected_date:
             display_selected_data(df, selected_date, 1)  # Display data for the chosen day
