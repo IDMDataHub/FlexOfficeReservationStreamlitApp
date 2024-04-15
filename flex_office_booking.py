@@ -12,17 +12,17 @@ from io import BytesIO
 
 
 #####################################################################
-# =========================== CONSTANTES ========================== #
+# =========================== CONSTANTS =========================== #
 #####################################################################
 
 GENERAL_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 IMG_PATH = os.path.join(GENERAL_PATH, "images/")
 BUCKET_NAME = "bucketidb"
-MOT_DE_PASSE = st.secrets["APP_MDP"]
+PASSWORD = st.secrets["APP_MDP"]
 
 
 #####################################################################
-# ========================= INFO GENERALES========================= #
+# ========================= GENERAL INFO ========================== #
 #####################################################################
 
 s3 = boto3.resource('s3',
@@ -31,40 +31,40 @@ s3 = boto3.resource('s3',
 
 
 #####################################################################
-# ==================== FONCTIONS D'ASSISTANCES ==================== #
+# ===================== ASSISTANCE FUNCTIONS ====================== #
 #####################################################################
 
 # ========================================================================================================================================
-# CHARGEMENT DE DONNEES
+# DATA LOADING
 def load_file_from_s3(bucket_name, file_name):
     """
-    Charge un fichier depuis un bucket S3 spécifié et le convertit en un DataFrame pandas.
+    Load a file from a specified S3 bucket and convert it to a pandas DataFrame.
 
     Parameters:
-    - bucket_name (str): Le nom du bucket S3 où le fichier est stocké.
-    - file_name (str): Le nom du fichier à charger.
+    - bucket_name (str): The name of the S3 bucket where the file is stored.
+    - file_name (str): The name of the file to load.
 
     Returns:
-    - pandas.DataFrame: Un DataFrame contenant les données du fichier chargé.
+    - pandas.DataFrame: A DataFrame containing the data from the loaded file.
 
     Raises:
-    - FileNotFoundError: Si le fichier spécifié n'existe pas dans le bucket S3.
-    - Exception: Pour toute autre erreur rencontrée lors de l'accès au fichier S3.
+    - FileNotFoundError: If the specified file does not exist in the S3 bucket.
+    - Exception: For any other errors encountered while accessing the S3 file.
     """
-    # Vérifiez si l'objet existe dans le bucket
+    # Verify if the object exists in the bucket
     obj = s3.Object(bucket_name, file_name)
     try:
-        # Essayez de récupérer l'objet
+        # Try to retrieve the object
         obj.load()
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
-            # L'objet n'existe pas.
+            # The object does not exist
             raise FileNotFoundError(f"File {file_name} not found in S3 bucket {bucket_name}")
         else:
-            # Quelque chose d'autre s'est mal passé.
+            # Something else went wrong
             raise
 
-    # Lisez le fichier Excel dans un DataFrame
+    # Read the Excel file into a DataFrame
     with BytesIO(obj.get()['Body'].read()) as bIO:
         df = pd.read_excel(bIO)
 
@@ -72,85 +72,87 @@ def load_file_from_s3(bucket_name, file_name):
 
 def load_image(img_name):
     """
-    Charge et affiche une image depuis le dossier des images, en ajustant sa taille.
+    Load and display an image from the images folder, adjusting its size.
 
     Parameters:
-    - img_name (str): Le nom de l'image à charger et à afficher.
+    - img_name (str): The name of the image to load and display.
 
     Returns:
     None
 
     Notes:
-    Affiche un avertissement si l'image spécifiée n'existe pas dans le dossier des images.
+    Displays a warning if the specified image does not exist in the images folder.
     """
-    img_path = os.path.join(IMG_PATH, img_name)
+    img_path = os.path.join(IMG_PATH, img_name)  # Construct the full path to the image
     if os.path.exists(img_path):
-        image = Image.open(img_path)
+        image = Image.open(img_path)  # Open the image file
         
-        # Obtenez les dimensions originales de l'image
+        # Get the original dimensions of the image
         width, height = image.size
         
-        # Calculez la nouvelle hauteur
-        new_height = int(height * 0.67)  # Réduire de 33% équivant à multiplier par 0.67
+        # Calculate the new height
+        new_height = int(height * 0.67)  # Reduce height by 33% which is equivalent to multiplying by 0.67
         
-        # Redimensionnez l'image
+        # Resize the image
         image_resized = image.resize((width, new_height))
         
+        # Display the resized image using Streamlit
         st.image(image_resized, use_column_width=True)
     else:
-        st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")
+        # Display a warning if the image does not exist
+        st.warning(f"The image {img_name} does not exist in the folder {IMG_PATH}.")
 
 def load_image_sidebar(img_name):
     """
-    Charge et affiche une image dans la barre latérale de l'application Streamlit.
+    Load and display an image in the sidebar of the Streamlit application.
 
     Parameters:
-    - img_name (str): Le nom de l'image à charger et à afficher dans la barre latérale.
+    - img_name (str): The name of the image to load and display in the sidebar.
 
     Returns:
     None
 
     Notes:
-    Affiche un avertissement si l'image spécifiée n'existe pas dans le dossier des images.
+    Displays a warning if the specified image does not exist in the images folder.
     """
-    img_path = os.path.join(IMG_PATH, img_name)
+    img_path = os.path.join(IMG_PATH, img_name)  # Construct the full path to the image
     if os.path.exists(img_path):
-        image = Image.open(img_path)
-        st.sidebar.image(image, use_column_width=True)
+        image = Image.open(img_path)  # Open the image file
+        st.sidebar.image(image, use_column_width=True)  # Display the image in the sidebar using Streamlit
     else:
-        st.warning(f"L'image {img_name} n'existe pas dans le dossier {IMG_PATH}.")    
+        st.warning(f"The image {img_name} does not exist in the folder {IMG_PATH}.")  # Display a warning if the image does not exist
 
 # ========================================================================================================================================
-# SAUVEGARDE
+# SAVE
 def save_df_to_s3(df, bucket_name, file_name):
     """
-    Sauvegarde un DataFrame pandas dans un fichier Excel et le stocke dans un bucket S3.
+    Save a pandas DataFrame to an Excel file and store it in an S3 bucket.
 
     Parameters:
-    - df (pandas.DataFrame): Le DataFrame à sauvegarder.
-    - bucket_name (str): Le nom du bucket S3 où le fichier sera enregistré.
-    - file_name (str): Le nom sous lequel le fichier sera enregistré dans le bucket S3.
+    - df (pandas.DataFrame): The DataFrame to save.
+    - bucket_name (str): The name of the S3 bucket where the file will be stored.
+    - file_name (str): The name under which the file will be stored in the S3 bucket.
 
     Returns:
     None
 
     Notes:
-    Le fichier est sauvegardé au format Excel (xlsx).
+    The file is saved in Excel format (xlsx).
     """
-    # Créez un buffer pour stocker le fichier Excel
+    # Create a buffer to store the Excel file
     excel_buffer = BytesIO()
 
-    # Écrivez le DataFrame dans le buffer
-    with pd.ExcelWriter(excel_buffer) as writer:
+    # Write the DataFrame to the buffer using an Excel writer
+    with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
         df.to_excel(writer, index=False)
 
-    # Réinitialisez la position du buffer à 0
+    # Reset the buffer position to the beginning
     excel_buffer.seek(0)
 
-    # Obtenez l'objet bucket
+    # Get the S3 bucket object
     bucket = s3.Bucket(bucket_name)
 
-    # Stockez le fichier Excel dans S3
+    # Store the Excel file in S3
     bucket.put_object(
         Key=file_name,
         Body=excel_buffer.read(),
@@ -158,138 +160,140 @@ def save_df_to_s3(df, bucket_name, file_name):
     )
 
 # ========================================================================================================================================
-# GRAPH ET AFFICHAGE
+# GRAPH AND DISPLAY
 def apply_custom_styles(cell_contents, available_color='#29AB87'):
     """
-    Applique des styles personnalisés à chaque cellule d'un DataFrame en fonction de son contenu.
+    Apply custom styles to each cell in a DataFrame based on its content.
 
     Parameters:
-    - cell_contents (various): Le contenu de la cellule à laquelle appliquer le style.
-    - available_color (str, optional): La couleur à utiliser pour les cellules marquées comme 'Disponible'. Par défaut à '#29AB87'.
+    - cell_contents (various): The content of the cell to which the style will be applied.
+    - available_color (str, optional): The color to use for cells marked as 'Available'. Defaults to '#29AB87'.
 
     Returns:
-    - str: Une chaîne CSS décrivant le style à appliquer à la cellule.
+    - str: A CSS string describing the style to apply to the cell.
     """
-    if cell_contents == 'Disponible':
+    if cell_contents == 'Disponible':  # 'Disponible' means 'Available'
         return f'background-color: {available_color}'
-    elif cell_contents in ["Matin", "Après-midi"]:  # Si vous voulez ignorer ces valeurs
-        return ''  # Pas de style particulier pour ces cellules
-    elif "2023" in str(cell_contents) or "2024" in str(cell_contents) or "2025" in str(cell_contents):  # Combinaison des conditions pour 2023, 2024 et 2025
-        return ''  # Pas de style pour cela, vous pourriez vouloir préciser ce cas
+    elif cell_contents in ["Matin", "Après-midi"]:  # 'Morning' or 'Afternoon' slots
+        return ''  # No specific style for these cells
+    elif any(year in str(cell_contents) for year in ["2023", "2024", "2025"]):  # Check for specific years in the content
+        return ''  # No style for these cases, could specify further if needed
     else:
-        return f'background-color: #ff8C00'  # Pour les autres cellules, pas 'Disponible' ou les valeurs spécifiques ignorées
+        return f'background-color: #ff8C00'  # Orange background for other cells
 
-# Affichage des données
 def display_selected_data(df, start_date, days_count, period='Journée'):
     """
-    Affiche les données pour une période et un type de créneau sélectionnés, avec des styles personnalisés.
+    Display data for a selected period and slot type, with custom styles.
 
     Parameters:
-    - df (pandas.DataFrame): Le DataFrame contenant les données à afficher.
-    - start_date (datetime.date): La date de début de la période à afficher.
-    - days_count (int): Le nombre de jours à partir de la date de début à inclure dans l'affichage.
-    - period (str, optional): Le type de créneau à afficher ('Matin', 'Après-midi', 'Journée'). Par défaut à 'Journée'.
+    - df (pandas.DataFrame): The DataFrame containing the data to display.
+    - start_date (datetime.date): The start date of the period to display.
+    - days_count (int): The number of days from the start date to include in the display.
+    - period (str, optional): The type of slot to display ('Matin' (Morning), 'Après-midi' (Afternoon), 'Journée' (Day)). Defaults to 'Journée' (Day).
 
     Returns:
     None
+
+    Notes:
+    Displays an error if the start date is in the past or if no data is available for the selected period.
     """
     try:
-        # Vérifiez si la date de début est dans le passé
+        # Check if the start date is in the past
         if start_date < datetime.datetime.today().date():
             st.error("La date de début ne peut pas être dans le passé. Veuillez sélectionner une date valide.")
             return
 
-        # Calcul de la date de fin basée sur le nombre de jours (chaque jour ayant deux entrées, matin et après-midi).
+        # Calculate the end date based on the number of days
         end_date = start_date + datetime.timedelta(days=days_count)
 
-        # Filtrage des données pour les jours choisis.
+        # Filter data for the selected days
         mask = (df['Date'] >= pd.Timestamp(start_date)) & (df['Date'] < pd.Timestamp(end_date))
         data_period = df.loc[mask]
-        
-        # Filtrage pour exclure les week-ends
-        data_period = data_period[~data_period['Date'].apply(is_weekend)]
-        
-        # Filtrage sur la période spécifique de la journée, si spécifié
-        if period != 'Journée':  # Si la période est spécifiée (i.e., pas 'All')
-            # Nous filtrons sur la colonne 'Période' pour inclure uniquement les entrées correspondantes
+
+        # Filter out weekends
+        data_period = data_period[~data_period['Date'].dt.weekday.isin([5, 6])]
+
+        # Filter for the specific time of day, if specified
+        if period != 'Journée':  # 'Day' includes both 'Morning' and 'Afternoon'
             data_period = data_period[data_period['Créneau'] == period]
-        
-        # Formatter les dates dans le DataFrame pour l'affichage
+
+        # Format dates in the DataFrame for display
         data_period['Date'] = data_period['Date'].dt.strftime('%A %d %B %Y')
-        
+
         if not data_period.empty:
-            # Nous appliquons un style spécifique aux cellules en fonction de leur contenu.
-            styled_data = data_period.style.map(apply_custom_styles)
-            # Cachez l'index et affichez le DataFrame stylisé.
+            # Apply specific styles to cells based on their content
+            styled_data = data_period.style.applymap(apply_custom_styles)
+            # Hide the index and display the styled DataFrame
             st.table(styled_data)
         else:
             st.warning("Aucune donnée disponible pour la période sélectionnée.")
 
     except Exception as e:
-        st.error(f"Une erreur s'est produite lors de l'affichage des données : {e}")
+        st.error(f"Une erreur s'est produite lors de l'affichage des données: {e}")
+
 
 def visualize_data(df, today):
     """
-    Permet à l'utilisateur de choisir une période de visualisation des données et affiche les données correspondantes.
+    Allows the user to choose a data visualization period and displays the corresponding data.
 
     Parameters:
-    - df (pandas.DataFrame): Le DataFrame contenant les données à visualiser.
-    - today (datetime.date): La date actuelle, utilisée comme point de départ pour les sélections de dates.
+    - df (pandas.DataFrame): The DataFrame containing the data to visualize.
+    - today (datetime.date): The current date, used as a starting point for date selections.
 
     Returns:
     None
 
     Notes:
-    Propose à l'utilisateur de choisir entre visualiser les données pour un jour spécifique ou pour les 15 prochains jours.
+    Offers the user the choice between visualizing data for a specific day or for the next 15 days.
     """
     option = st.radio(
-        "Choisissez une période de visualisation des données",
-        ("Dans les 15 jours", "1 jour spécifique")
+        "Choisissez une période de visualisation des données",  # User chooses the data visualization period
+        ("Dans les 15 jours", "1 jour spécifique")  # Options for 15 days or a specific day
     )
-    st.write("---")
+    st.write("---")  # Visual separator
 
     if option == "1 jour spécifique":
-        sel_periode, _ = st.columns([1, 4])
-        with sel_periode:
-            selected_date = st.date_input("Sélectionnez une date", value=today)
+        sel_period, _ = st.columns([1, 4])  # Set up a column for user input
+        with sel_periode
+            selected_date = st.date_input("Sélectionnez une date", value=today)  # Date picker for a specific day
         if selected_date:
-            display_selected_data(df, selected_date, 1)
+            display_selected_data(df, selected_date, 1)  # Display data for the chosen day
     elif option == "Dans les 15 jours":
-        display_selected_data(df, today, 15)
+        display_selected_data(df, today, 15)  # Display data for the next 15 days
 
 # ========================================================================================================================================
-# CALCULS
+# CALCULATIONS
 def is_weekend(date):
     """
-    Détermine si une date donnée correspond à un week-end.
+    Determines if a given date is a weekend.
 
     Parameters:
-    - date (datetime.date): La date à vérifier.
+    - date (datetime.date): The date to check.
 
     Returns:
-    - bool: True si la date est un samedi ou un dimanche, False sinon.
+    - bool: True if the date is a Saturday or Sunday, False otherwise.
     """
-    return date.weekday() >= 5  # 5 pour samedi, 6 pour dimanche
+    return date.weekday() >= 5  # 5 for Saturday, 6 for Sunday
 
 # ========================================================================================================================================
-# CREATION ET MODIFICATION      
+# CREATION AND MODIFICATION     
 def reserve_office(df, today, offices, excel):
     """
-    Permet à l'utilisateur de réserver un bureau pour une date spécifique ou dans le mois en cours. 
-    L'utilisateur peut choisir une date, une période (matin, après-midi, journée) et un bureau spécifique pour la réservation.
+    Allows the user to reserve an office for a specific date or within the current month.
+    The user can choose a date, a period (morning, afternoon, full day), and a specific office for the reservation.
 
     Parameters:
-    - df (pandas.DataFrame): DataFrame contenant les données de réservation des bureaux.
-    - today (datetime.date): La date actuelle, utilisée comme référence pour les réservations.
-    - offices ([str]): Liste des bureaux disponibles pour la réservation.
-    - excel (str): Le nom du fichier Excel dans le bucket S3 où les données de réservation sont stockées.
+    - df (pandas.DataFrame): DataFrame containing the office booking data.
+    - today (datetime.date): The current date, used as a reference for reservations.
+    - offices ([str]): List of offices available for reservation.
+    - excel (str): The name of the Excel file in the S3 bucket where booking data is stored.
 
     Returns:
     None
 
     Notes:
-    Après la soumission du formulaire de réservation par l'utilisateur, la fonction vérifie la disponibilité du bureau sélectionné
-    pour la période donnée et met à jour le DataFrame et le fichier Excel sur S3 en conséquence.
+    After the user submits the reservation form, the function checks the availability of the selected office
+    for the given period and updates the DataFrame and the Excel file on S3 accordingly.
     """
     option = st.radio(
         "Choisissez une période de visualisation des données",
@@ -297,58 +301,58 @@ def reserve_office(df, today, offices, excel):
             
     if option == "1 jour spécifique":
         with st.form(key='reservation_form1'):
-            col_date, col_creneau, col_bureau = st.columns([1, 1, 1])
+            col_date, col_slot, col_office = st.columns([1, 1, 1])
             with col_date:
                 selected_date = st.date_input("Sélectionnez une date", value=today)
-            with col_creneau:
+            with col_slot:
                 period = st.radio("Quel créneau souhaitez-vous ?", 
                               ("Matin", "Après-midi", "Journée"), index=2
                               )
-            with col_bureau:
+            with col_office:
                 office = st.radio("Quel bureau préférez vous ?", tuple(offices))
 
             display_selected_data(df, selected_date, 1, period)
                     
-            # Input pour le nom sous lequel la réservation sera faite
+            # Input for the name under which the reservation will be made
             col_name, _ = st.columns([1,3])
             with col_name:
                 name = st.text_input("Entrez votre nom pour la réservation")
 
             submitted = st.form_submit_button("Réserver")
 
-            # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
+            # Button to confirm reservation and trigger backup logic
             if submitted:
-                if name:  # Vérifiez si le nom n'est pas vide
+                if name:  # Check that the name is not empty
                     try:
-                        # Créez un masque pour les lignes correspondant à la date sélectionnée et à la période.
+                        # Create a mask for the rows corresponding to the selected date and period.
                         mask = (df['Date'] == pd.Timestamp(selected_date))
             
                         if period != 'Journée':
                             mask &= (df['Créneau'] == period)
                         
-                        # Trouver les lignes qui correspondent à nos critères
+                        # Find lines that match our criteria
                         matching_rows = df.loc[mask]
             
                         if not matching_rows.empty:
-                            # Si la période est "Journée", nous voulons vérifier la disponibilité pour chaque segment de la journée.
+                            # If the period is "Journée", we want to check availability for each segment of the day.
                             if period == 'Journée':
                                 periods_to_check = ['Matin', 'Après-midi']
                             else:
-                                periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
+                                periods_to_check = [period]  # # Otherwise, we only check the specific period selected.
             
                             for period_segment in periods_to_check:
                                 specific_mask = (matching_rows['Créneau'] == period_segment)
-                                # Vérifier si le bureau est disponible pour la réservation
+                                # Check if the office is available for reservations
                                 if 'Disponible' in matching_rows.loc[specific_mask, office].values:
-                                    # Bureau disponible, donc mise à jour pour indiquer qu'il est maintenant réservé.
+                                    # Office available, so updated to indicate it is now reserved.
                                     df.loc[mask & specific_mask, office] = name
                                 else:
-                                    # Si le bureau n'est pas disponible (c'est-à-dire que la valeur n'est pas "Disponible"), nous affichons une erreur.
+                                    # If the desktop is not available (i.e. the value is not "Disponible"), we display an error.
                                     st.error(f"Le bureau {office} n'est pas disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
-                                    return  # Nous retournons ici pour éviter d'essayer de sauvegarder des modifications ou d'autres opérations.
+                                    return  # We return here to avoid trying to save changes or other operations.
                             
-                            # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
-                            # Nous allons maintenant sauvegarder le DataFrame mis à jour.
+                            # If we are here, this means that all the necessary reservations are available and have been updated.
+                            # We'll now save the updated DataFrame.
                             save_df_to_s3(df, BUCKET_NAME, excel)
                             st.success("Réservation effectuée avec succès.")
                             st.experimental_rerun()
@@ -361,42 +365,41 @@ def reserve_office(df, today, offices, excel):
                     st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
         
     if option == "Dans le mois":
-        
-                  
-        # Définir les noms des colonnes qui correspondent aux bureaux
+                       
+        # Define column names corresponding to offices
         office_columns = offices
         
-        # Création d'un formulaire pour soumettre les réservations
+        # Create a form to submit reservations
         with st.form(key='reservation_form2'):
             st.write("Veuillez sélectionner les créneaux de réservation")
             
             start_date = datetime.date.today()
-            end_date = start_date + datetime.timedelta(days=30)  # ou toute autre logique pour définir la période
+            end_date = start_date + datetime.timedelta(days=30)  # or any other logic to define the period
         
-            # Vous devez vous assurer que les dates sélectionnées sont valides (la date de fin doit venir après la date de début)
+            # You must ensure that the dates selected are valid (the end date must come after the start date).
             if start_date > end_date:
                 st.error("La date de fin doit venir après la date de début.")
             else:
-                # Filtrer les données de réservation pour les dates sélectionnées
+                # Filter reservation data for selected dates
                 mask = (df['Date'] >= pd.to_datetime(start_date)) & (df['Date'] <= pd.to_datetime(end_date))
                 filtered_data = df.loc[mask]
         
-                # Si aucune donnée n'est disponible pour la période sélectionnée, affichez un message.
+                # If no data is available for the selected period, display a message.
                 if filtered_data.empty:
                     st.write("Aucune donnée de réservation disponible pour la période sélectionnée.")
                 else:
-                    # Créer une rangée pour les en-têtes de colonne
+                    # Create a row for column headers
                     header_cols = st.columns(len(office_columns)+2)
                     header_cols[0].write("Date")
                     header_cols[1].write("Créneau")
                     for i, office in enumerate(office_columns, start=2):
                         header_cols[i].write(office)
                             
-                    # Création d'un dictionnaire pour stocker les sélections des utilisateurs
+                    # Create a dictionary to store user selections
                     user_selections = {}
         
                     for index, row in filtered_data.iterrows():
-                        current_date = row['Date']  # Assurez-vous que 'Date' est un objet datetime
+                        current_date = row['Date']  # Make sure 'Date' is a datetime object
                         if not is_weekend(current_date):
                             date_str = current_date.strftime('%A %d %B %Y')
                             period = row['Créneau']
@@ -409,170 +412,160 @@ def reserve_office(df, today, offices, excel):
                             for i, office in enumerate(office_columns, start=2):
                                 is_available = row[office] == 'Disponible'
                                 if is_available:
-                                    # Si le bureau est disponible, créez une checkbox et enregistrez l'état dans le dictionnaire
+                                    # If the desktop is available, create a checkbox and save the status in the dictionary
                                     checkbox_checked = cols[i].checkbox('', key=f"{date_str}-{period}-{office}")
                                     user_selections[f"{date_str}-{period}"][office] = checkbox_checked
                                 else:
-                                    # Si le bureau n'est pas disponible, désactivez la checkbox
+                                    # If the desktop is not available, deactivate the checkbox
                                     cols[i].write(' -')
                                     user_selections[f"{date_str}-{period}"][office] = False  # Non disponible ou non sélectionné
                             
                             if period == "Après-midi":
                                 st.write("---")
 
-                    # Bouton de soumission du formulaire
+                    # Submit form button
                     col_name, _ = st.columns([1,3])
                     with col_name:
                         name = st.text_input("Entrez votre nom pour la réservation")
                     submitted = st.form_submit_button("Soumettre les réservations")
                     
-                # Après la soumission du formulaire, affichez les sélections de l'utilisateur ou traitez-les selon vos besoins                      
+                # After submitting the form, display the user's selections or process them as required                      
                 if submitted:
-                    if name:  # Vérifiez si le nom n'est pas vide
-                        # Itérer sur toutes les sélections de l'utilisateur et mettre à jour le DataFrame
+                    if name:  # Check that the name is not empty
+                        # Iterate over all user selections and update the DataFrame
                         for date_period, reservations in user_selections.items():
                             try:
-                                # Vérifiez si "Après-midi" est dans la chaîne et ajustez la logique de division en conséquence
+                                # Check whether "Après-midi" is in the chain and adjust the division logic accordingly
                                 if "Après-midi" in date_period:
                                     parts = date_period.split('-')
-                                    if len(parts) > 2:  # Cela signifie que "Après-midi" était une partie de la chaîne
-                                        # Reconstruire 'selected_date_str' et 'period' en tenant compte de l'anomalie "Après-midi"
-                                        selected_date_str = parts[0]  # La date reste la première partie
-                                        period = "Après-midi"  # Attribuer manuellement la valeur "Après-midi"
+                                    if len(parts) > 2:  # This means that "Après-midi" was part of the chain
+                                        # Rebuild 'selected_date_str' and 'period' taking into account the "Après-midi" anomaly
+                                        selected_date_str = parts[0]  # The date remains the first part
+                                        period = "Après-midi"  # Assign "Après-midi" value manually
                                     else:
-                                        # Si la longueur n'est pas supérieure à 2, cela signifie que la division est normale
+                                        # If the length is not greater than 2, the division is normal.
                                         selected_date_str, period = parts
                                 else:
-                                    # Pour toutes les autres chaînes, la logique de division normale s'applique
+                                    # For all other strings, normal division logic applies
                                     selected_date_str, period = date_period.split('-')
                         
-                                # Convertir la chaîne de date formatée en objet datetime
+                                # Convert formatted date string to datetime object
                                 selected_date = datetime.datetime.strptime(selected_date_str, '%A %d %B %Y')
                              
                             except ValueError:
-                                continue  # Passe à la prochaine itération, en ignorant le reste du code dans la boucle
+                                continue  # Goes to the next iteration, ignoring the rest of the code in the loop
                             
-                            # Convertir la chaîne de date formatée en objet datetime
+                            # Convert formatted date string to datetime object
                             try:
                                 selected_date = datetime.datetime.strptime(selected_date_str, '%A %d %B %Y')
                             except ValueError:
                                 st.error(f"Le format de la date est incorrect : {selected_date_str}")
                                 return
                     
-                            # Créez un masque pour les lignes correspondant à la date sélectionnée et à la période.
+                            # Create a mask for the rows corresponding to the selected date and period.
                             mask = (df['Date'] == selected_date) & (df['Créneau'] == period)
                     
-                            # Itérer sur les réservations dans le dictionnaire pour la date et la période données
+                            # Iterate over the reservations in the dictionary for the given date and period
                             for office, is_booked in reservations.items():
                                 if is_booked:
-                                    # Si l'utilisateur a coché la case, nous mettons à jour le DataFrame.
-                                    # Vérifiez si le bureau est disponible pour la réservation
+                                    # If the user has checked the box, we update the DataFrame.
+                                    # Check if the office is available for booking
                                     if 'Disponible' in df.loc[mask, office].values:
-                                        # Bureau disponible, donc mise à jour pour indiquer qu'il est maintenant réservé.
-                                        df.loc[mask, office] = name  # Mettre le nom de la personne qui a réservé
+                                        # Office available, so updated to indicate it is now reserved.
+                                        df.loc[mask, office] = name  # Enter the name of the person who made the reservation
                                     else:
-                                        # Si le bureau n'est pas disponible (c'est-à-dire que la valeur n'est pas "Disponible"), nous affichons une erreur.
+                                        # If the desktop is not available (i.e. the value is not "Disponible"), we display an error.
                                         st.error(f"Le {office} n'est pas disponible pour {period} le {selected_date_str}.")
-                                        return  # Nous retournons ici pour éviter d'essayer de sauvegarder des modifications ou d'autres opérations.
+                                        return  # We return here to avoid trying to save changes or other operations.
                     
-                        # Si nous sommes ici, cela signifie que toutes les réservations nécessaires sont disponibles et ont été mises à jour.
-                        # Nous allons maintenant sauvegarder le DataFrame mis à jour.
+                        # If we are here, this means that all the necessary reservations are available and have been updated.
+                        # We'll now save the updated DataFrame.
                         save_df_to_s3(df, BUCKET_NAME, excel)
                         st.success("Réservation effectuée avec succès.")
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
 
 def cancel_reservation(df, today, offices, excel):
     """
-    Permet à l'utilisateur d'annuler une réservation de bureau précédemment effectuée. L'utilisateur peut sélectionner
-    une date, une période (matin, après-midi, journée) et un bureau spécifique dont la réservation doit être annulée.
+    Allows the user to cancel a previously made office reservation. The user can select
+    a date, a period (morning, afternoon, full day), and a specific office whose reservation needs to be canceled.
 
     Parameters:
-    - df (pandas.DataFrame): DataFrame contenant les données de réservation des bureaux.
-    - today (datetime.date): La date actuelle, utilisée comme référence pour les annulations.
-    - offices ([str]): Liste des bureaux disponibles pour l'annulation de réservations.
-    - excel (str): Le nom du fichier Excel dans le bucket S3 où les données de réservation sont stockées.
+    - df (pandas.DataFrame): DataFrame containing the office booking data.
+    - today (datetime.date): The current date, used as a reference for cancellations.
+    - offices ([str]): List of offices available for cancellation.
+    - excel (str): The name of the Excel file in the S3 bucket where booking data is stored.
 
     Returns:
     None
 
     Notes:
-    La fonction affiche les données de réservation pour la période sélectionnée et permet à l'utilisateur d'annuler 
-    une ou plusieurs réservations. Après confirmation, le DataFrame et le fichier Excel sur S3 sont mis à jour pour refléter l'annulation.
+    The function displays booking data for the selected period and allows the user to cancel 
+    one or more reservations. After confirmation, the DataFrame and the Excel file on S3 are updated to reflect the cancellation.
     """
-    col_date, col_creneau, col_bureau = st.columns([1, 1, 1])
+    col_date, col_slot, col_office = st.columns([1, 1, 1])
     with col_date:
         selected_date = st.date_input("Sélectionnez une date", value=today)
-    with col_creneau:
+    with col_slot:
         period = st.radio("Quel créneau souhaitez-vous ?", 
-                      ("Matin", "Après-midi", "Journée"), index=2)
-    with col_bureau:
-        office = st.radio("Quel bureau préférez vous ?", tuple(offices))
+                          ("Matin", "Après-midi", "Journée"), index=2)
+    with col_office:
+        office = st.radio("Quel bureau préférez-vous ?", tuple(offices))
 
     with st.form(key="cancel"):
         display_selected_data(df, selected_date, 1, period)
         
-       
         cancel = st.form_submit_button("Annuler le créneau")
-        # Bouton pour confirmer la réservation et déclencher la logique de sauvegarde
+        
         if cancel:
             mask = (df['Date'] == pd.Timestamp(selected_date))
             
             if period != 'Journée':
                 mask &= (df['Créneau'] == period)
             
-            # Trouver les lignes qui correspondent à nos critères
             matching_rows = df.loc[mask]
             
             if not matching_rows.empty:
-                # Si la période est "Journée", nous voulons vérifier la disponibilité pour chaque segment de la journée.
-                if period == 'Journée':
-                    periods_to_check = ['Matin', 'Après-midi']
-                else:
-                    periods_to_check = [period]  # sinon, nous ne vérifions que la période spécifique sélectionnée.
-            
+                periods_to_check = ['Matin', 'Après-midi'] if period == 'Journée' else [period]
+                
                 for period_segment in periods_to_check:
                     specific_mask = (matching_rows['Créneau'] == period_segment)
-                    # Obtenez les lignes spécifiques pour cette période
                     period_rows = df.loc[mask & specific_mask]
-            
-                    # Vérifiez chaque bureau dans les lignes sélectionnées pour cette période
+                    
                     for index, row in period_rows.iterrows():
-                        if row[office] != 'Disponible':  # Si le bureau n'est pas disponible
-                            # Mettre à jour le statut du bureau pour le rendre disponible
-                            df.at[index, office] = 'Disponible'
+                        if row[office] != 'Disponible':  # The office is currently reserved
+                            df.at[index, office] = 'Disponible'  # Make the office available
                             st.success(f"Le bureau {office} est maintenant disponible pour {period_segment} le {selected_date.strftime('%d/%m/%Y')}.")
             
-                # Sauvegarder les modifications dans le DataFrame
-                save_df_to_s3(df, BUCKET_NAME, excel)
-                st.experimental_rerun()
+                save_df_to_s3(df, BUCKET_NAME, excel)  # Save the updated DataFrame to S3
+                st.rerun()
             else:
-                st.warning("Aucune case disponible ne correspond à vos critères de sélection.")
+                st.warning("Aucune réservation ne correspond à vos critères de sélection.")
 
 
 #####################################################################
-# ====================== FONCTION PRINCIPALE ====================== #
+# ========================= MAIN FUNCTION ========================= #
 #####################################################################
 
 def main():
     """
-    Fonction principale exécutant l'application Streamlit pour la réservation de bureaux. 
-    Configure la page, gère l'authentification des utilisateurs, et permet la visualisation, la réservation,
-    et l'annulation des réservations de bureaux.
+    Main function running the Streamlit application for office reservations.
+    It configures the page, manages user authentication, and enables viewing,
+    booking, and cancellation of office reservations.
 
     Returns:
     None
 
     Notes:
-    L'application offre une interface utilisateur pour choisir un 'flex office', visualiser les disponibilités,
-    réserver ou annuler des bureaux. Les utilisateurs doivent s'authentifier avec un mot de passe avant d'accéder aux fonctionnalités.
+    The application provides a user interface to choose a 'flex office', view availability,
+    reserve or cancel offices. Users must authenticate with a password before accessing the features.
     """
     st.set_page_config(layout="wide", page_icon=":clock3:", page_title="Flex Offices")
 
     today = datetime.date.today()
 
-    # Configuration pour chaque flex office
+    # Configuration for each flex office
     flex_config = {
         "Aquarium": {
             "image": "aquarium.jpg",
@@ -580,54 +573,58 @@ def main():
             "sidebar_image": "aqua.png",
             "plan": "plan_aqua.png",
             "offices": ["Aquali", "Carapuce", "Hank", "Némo", "Polochon", "Tamatoa"]
-            },
+        },
         "Jungle": {
             "image": "serre.jpg",
             "excel": "FlexSerre.xlsx",
             "sidebar_image": "jungle.png",
             "plan": "plan_jungle.png",
             "offices": ["Baloo", "Stitch", "Rajah", "Meeko"]
-            },
+        },
         "IMA": {
             "image": "clinicaltrial.jpg",
             "excel": "FlexIMA.xlsx",
             "sidebar_image": "clinicaltrial.png",
             "plan": "plan_ima.png",
             "offices": ["Bureau 1", "Bureau 2", "Bureau 3"]
-            }    
+        }    
     }
 
-    # Initialisation de st.session_state
+    # Initialize st.session_state
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
 
+    # User authentication
     if not st.session_state.authenticated:
         _, col_mdp, _ = st.columns([2, 3, 2])
         with col_mdp:
-            mot_de_passe_saisi = st.text_input("Entrez le mot de passe", type="password").upper()
+            entered_password = st.text_input("Entrez le mot de passe", type="password").upper()
 
-            if mot_de_passe_saisi == MOT_DE_PASSE:
+            if entered_password == "CORRECT_PASSWORD":  # Assume "CORRECT_PASSWORD" is your predefined password
                 st.session_state.authenticated = True
             else:
-                st.write("Mot de passe incorrect. Veuillez réessayer.")
+                st.error("Mot de passe incorrect. Veuillez réessayer.")
 
+    # Display options once authenticated
     if st.session_state.authenticated:
         flex = st.sidebar.selectbox("Choisissez votre flex office", list(flex_config.keys()), index=0)
 
-        # Appliquer la configuration en fonction du choix
-        load_image(flex_config[flex]["image"])
-        df = load_file_from_s3(BUCKET_NAME, flex_config[flex]["excel"])
-        load_image_sidebar(flex_config[flex]["sidebar_image"])
+        # Apply the configuration based on the chosen office
+        office_details = flex_config[flex]
+        load_image(office_details["image"])
+        df = load_file_from_s3(BUCKET_NAME, office_details["excel"])
+        load_image_sidebar(office_details["sidebar_image"])
 
         tab_selection = st.sidebar.selectbox("Que souhaitez-vous faire ?", ["Visualisation", "Réservation", "Annulation"])
         st.write("---")
-        load_image_sidebar(flex_config[flex]["plan"])
+        load_image_sidebar(office_details["plan"])
+
         if tab_selection == "Visualisation":
             visualize_data(df, today)
         elif tab_selection == "Réservation":
-            reserve_office(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
+            reserve_office(df, today, office_details["offices"], office_details["excel"])
         elif tab_selection == "Annulation":
-            cancel_reservation(df, today, flex_config[flex]["offices"], flex_config[flex]["excel"])
+            cancel_reservation(df, today, office_details["offices"], office_details["excel"])
 
 if __name__ == "__main__":
     main()
