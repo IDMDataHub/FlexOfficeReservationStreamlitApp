@@ -596,11 +596,11 @@ def main():
 
     # User authentication
     if not st.session_state.authenticated:
-        _, col_mdp, _ = st.columns([2, 3, 2])
-        with col_mdp:
+        _, col_password, _ = st.columns([2, 3, 2])
+        with col_password:
             entered_password = st.text_input("Entrez le mot de passe", type="password").upper()
 
-            if entered_password == "PASSWORD":  # Assume "CORRECT_PASSWORD" is your predefined password
+            if entered_password == PASSWORD:  # Assume "CORRECT_PASSWORD" is your predefined password
                 st.session_state.authenticated = True
             else:
                 st.error("Mot de passe incorrect. Veuillez réessayer.")
