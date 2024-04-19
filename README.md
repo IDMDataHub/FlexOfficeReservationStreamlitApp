@@ -1,50 +1,51 @@
-# **FlexOfficeReservationStreamlitApp**
 
-## *Description Brève*
-**FlexOfficeReservationStreamlitApp** est une application Streamlit pour la réservation de bureaux en mode flex office. Elle permet aux utilisateurs de visualiser, réserver et annuler des bureaux dans différents environnements de travail, en intégrant des fonctionnalités comme l'interaction avec AWS S3 pour le stockage des données de réservation.
+# FlexOfficeReservationStreamlitApp
 
-### Fonctionnalités
-- **Visualisation des Disponibilités**: Permet de voir les bureaux disponibles sur une période donnée.
-- **Réservation de Bureaux**: Interface utilisateur pour réserver un bureau pour des créneaux spécifiques.
-- **Annulation de Réservation**: Fonctionnalité pour annuler une réservation existante.
-- **Intégration avec AWS S3**: Gestion des données de réservation stockées sur AWS S3.
-- **Sécurité d'Accès**: Accès à l'application protégé par mot de passe.
+## Brief Description
+**FlexOfficeReservationStreamlitApp** is a Streamlit application for reserving flex office spaces. It allows users to view, book, and cancel office spaces in various work environments, incorporating features like interaction with AWS S3 for storing reservation data.
+
+### Features
+- **Availability Viewing**: Enables viewing available offices over a selected period.
+- **Office Booking**: User interface to book an office for specific time slots.
+- **Booking Cancellation**: Functionality to cancel an existing reservation.
+- **Integration with AWS S3**: Manages reservation data stored on AWS S3.
+- **Access Security**: Password-protected access to the application.
 
 ### Installation
-Pour installer et exécuter ce projet localement :
+To install and run this project locally:
 
-1. *Clonez le dépôt* :
+1. *Clone the repository*:
    ```bash
    git clone https://github.com/IDMDataHub/FlexOfficeReservationStreamlitApp.git
    ```
-2. *Installez Streamlit et les autres dépendances* :
+2. *Install Streamlit and other dependencies*:
    ```bash
    pip install streamlit pandas boto3 Pillow
    ```
 
-### Utilisation
-Lancez l'application Streamlit :
+### Usage
+Launch the Streamlit application:
 ```bash
 streamlit run app.py
 ```
-L'application sera accessible via votre navigateur à l'adresse indiquée par Streamlit.
+The application will be accessible via your browser at the address provided by Streamlit.
 
-### Interface Streamlit
-- **Sélection du Flex Office** : Choix du bureau flexible à visualiser ou réserver.
-- **Visualisation** : Affichage des disponibilités des bureaux.
-- **Réservation et Annulation** : Formulaires pour la réservation et l'annulation des créneaux de bureau.
+### Streamlit Interface
+- **Flex Office Selection**: Choose the flex office to view or book.
+- **Viewing**: Displays the availability of office spaces.
+- **Booking and Cancellation**: Forms for booking and cancelling office slots.
 
-### Bibliothèques Utilisées
-- `streamlit` : Pour créer l'interface utilisateur et gérer les interactions.
-- `pandas` : Pour la manipulation de DataFrame.
-- `boto3` : Pour l'intégration avec AWS S3.
-- `Pillow` : Pour le traitement des images.
+### Libraries Used
+- `streamlit`: For creating the user interface and managing interactions.
+- `pandas`: For DataFrame manipulation.
+- `boto3`: For integration with AWS S3.
+- `Pillow`: For image processing.
 
 ### Contribution
-Les contributions à ce projet sont les bienvenues. Pour proposer des améliorations ou des corrections, veuillez ouvrir une issue ou une pull request.
+Contributions to this project are welcome. To suggest improvements or corrections, please open an issue or a pull request.
 
-### Licence
-Ce projet est sous licence [MIT](https://choosealicense.com/licenses/mit/).
+### License
+This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
 
-### Auteur
+### Author
 *Maxime Jacoupy*
