@@ -17,7 +17,7 @@ from io import BytesIO
 
 GENERAL_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 IMG_PATH = os.path.join(GENERAL_PATH, "images/")
-BUCKET_NAME = "bucketidb"
+BUCKET_NAME = "bucketflexoffice"
 PASSWORD = st.secrets["APP_MDP"]
 
 
@@ -625,6 +625,11 @@ def main():
             reserve_office(df, today, office_details["offices"], office_details["excel"])
         elif tab_selection == "Annulation":
             cancel_reservation(df, today, office_details["offices"], office_details["excel"])
+
+
+#####################################################################
+# ========================== ALGO LAUNCH ========================== #
+#####################################################################
 
 if __name__ == "__main__":
     main()
