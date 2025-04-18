@@ -15,7 +15,6 @@ import os
 
 GENERAL_PATH = os.path.dirname(os.path.abspath(__file__)) + "/"
 IMG_PATH = os.path.join(GENERAL_PATH, "images/")
-PASSWORD = st.secrets["APP_MDP"]
 LOCAL_FOLDER = "flexoffice"
 
 #####################################################################
@@ -549,41 +548,24 @@ def main():
         }    
     }
 
-    # Initialize st.session_state
-    if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
+    flex = st.sidebar.selectbox("Choisissez votre flex office", list(flex_config.keys()), index=0)
 
-    # User authentication
-    if not st.session_state.authenticated:
-        _, col_password, _ = st.columns([2, 3, 2])
-        with col_password:
-            entered_password = st.text_input("Entrez le mot de passe", type="password").upper()
+    # Apply the configuration based on the chosen office
+    office_details = flex_config[flex]
+    load_image(office_details["image"])
+    df = load_file_from_local(LOCAL_FOLDER, office_details["excel"])
+    load_image_sidebar(office_details["sidebar_image"])
 
-            if entered_password == PASSWORD:  # Assume "CORRECT_PASSWORD" is your predefined password
-                st.session_state.authenticated = True
-            else:
-                st.error("Mot de passe incorrect. Veuillez réessayer.")
+    tab_selection = st.sidebar.selectbox("Que souhaitez-vous faire ?", ["Visualisation", "Réservation", "Annulation"])
+    st.write("---")
+    load_image_sidebar(office_details["plan"])
 
-    # Display options once authenticated
-    if st.session_state.authenticated:
-        flex = st.sidebar.selectbox("Choisissez votre flex office", list(flex_config.keys()), index=0)
-
-        # Apply the configuration based on the chosen office
-        office_details = flex_config[flex]
-        load_image(office_details["image"])
-        df = load_file_from_local(LOCAL_FOLDER, office_details["excel"])
-        load_image_sidebar(office_details["sidebar_image"])
-
-        tab_selection = st.sidebar.selectbox("Que souhaitez-vous faire ?", ["Visualisation", "Réservation", "Annulation"])
-        st.write("---")
-        load_image_sidebar(office_details["plan"])
-
-        if tab_selection == "Visualisation":
-            visualize_data(df, today)
-        elif tab_selection == "Réservation":
-            reserve_office(df, today, office_details["offices"], office_details["excel"])
-        elif tab_selection == "Annulation":
-            cancel_reservation(df, today, office_details["offices"], office_details["excel"])
+    if tab_selection == "Visualisation":
+        visualize_data(df, today)
+    elif tab_selection == "Réservation":
+        reserve_office(df, today, office_details["offices"], office_details["excel"])
+    elif tab_selection == "Annulation":
+        cancel_reservation(df, today, office_details["offices"], office_details["excel"])
 
 
 #####################################################################
