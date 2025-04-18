@@ -554,6 +554,7 @@ def main():
     office_details = flex_config[flex]
     load_image(office_details["image"])
     df = load_file_from_local(LOCAL_FOLDER, office_details["excel"])
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # 💡 Ajout essentiel
     load_image_sidebar(office_details["sidebar_image"])
 
     tab_selection = st.sidebar.selectbox("Que souhaitez-vous faire ?", ["Visualisation", "Réservation", "Annulation"])
