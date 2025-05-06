@@ -219,6 +219,7 @@ def visualize_data(df, today):
     elif option == "Dans les 15 jours":
         display_selected_data(df, today, 15)  # Display data for the next 15 days
 
+
 # ========================================================================================================================================
 # CALCULATIONS
 def is_weekend(date):
@@ -255,20 +256,22 @@ def reserve_office(df, today, offices, excel):
     """
     option = st.radio(
         "Choisissez une période de visualisation des données",
-            ("1 jour spécifique", "Dans le mois"))
+            ("1 jour spécifique", "Dans les 15 jours"))
             
     if option == "1 jour spécifique":
-        with st.form(key='reservation_form1'):
-            col_date, col_slot, col_office = st.columns([1, 1, 1])
-            with col_date:
-                selected_date = st.date_input("Sélectionnez une date", value=today)
-            with col_slot:
-                period = st.radio("Quel créneau souhaitez-vous ?", 
+
+        col_date, col_slot, col_office = st.columns([1, 1, 1])
+        with col_date:
+            selected_date = st.date_input("Sélectionnez une date", value=today)
+
+        with col_slot:
+            period = st.radio("Quel créneau souhaitez-vous ?", 
                               ("Matin", "Après-midi", "Journée"), index=2
                               )
-            with col_office:
-                office = st.radio("Quel bureau préférez vous ?", tuple(offices))
+        with col_office:
+            office = st.radio("Quel bureau préférez vous ?", tuple(offices))
 
+        with st.form(key='reservation_form1'):
             display_selected_data(df, selected_date, 1, period)
                     
             # Input for the name under which the reservation will be made
@@ -322,7 +325,7 @@ def reserve_office(df, today, offices, excel):
                 else:
                     st.warning("Veuillez entrer votre nom pour effectuer une réservation.")
         
-    if option == "Dans le mois":
+    if option == "Dans les 15 jours":
                        
         # Define column names corresponding to offices
         office_columns = offices
@@ -332,7 +335,7 @@ def reserve_office(df, today, offices, excel):
             st.write("Veuillez sélectionner les créneaux de réservation")
             
             start_date = datetime.date.today()
-            end_date = start_date + datetime.timedelta(days=30)  # or any other logic to define the period
+            end_date = start_date + datetime.timedelta(days=15)  # or any other logic to define the period
         
             # You must ensure that the dates selected are valid (the end date must come after the start date).
             if start_date > end_date:
